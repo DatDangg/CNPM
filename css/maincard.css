@@ -1,0 +1,64 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    margin-top: 120px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.flashcard-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+}
+
+.my-flashcard {
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.explore-btn {
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.flashcards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.flashcard {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.flashcard h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.flashcard h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.flashcard p {
+    font-size: 16px;
+    color: #666;
+}

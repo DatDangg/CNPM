@@ -1,0 +1,378 @@
+/* Global CSS */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+
+/* Styles CSS */
+.thi-th {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-color: #ffffff;
+}
+
+/* Thiết lập flexbox cho các phần tử chính */
+.thi-th .overlap {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.thi-th .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 130px;
+  background-color: #ffffff;
+  /* border: 1px solid #000000; */
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.thi-th .right-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thi-th .text-wrapper {
+  font-family: "Inter", Helvetica;
+  font-weight: 400;
+  color: #000000;
+  font-size: 48px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+.thi-th .container {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr); /* 12 columns */
+  grid-template-rows: auto auto; /* 2 rows */
+  gap: 20px; /* Adjust the gap between grid items */
+}
+
+.thi-th .div {
+  grid-column: 1 / span 12; /* Span across all 12 columns */
+  color: #000000;
+  font-size: 48px;
+  font-family: "Inter", Helvetica;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.thi-th .de {
+  grid-row: 2;
+  grid-column: 5 / span 8; /* Span 8 columns */
+}
+
+
+.thi-th .frame {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.thi-th .text-wrapper-2 {
+  font-family: "Inter", Helvetica;
+  font-weight: 400;
+  color: #000000;
+  font-size: 48px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.thi-th .frame-2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.thi-th .frame-3 {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.thi-th .frame-wrapper {
+  display: flex;
+  gap: 20px;
+}
+
+.thi-th .frame-4 {
+  display: flex;
+  gap: 20px;
+}
+
+.thi-th .img-2 {
+  max-width: 100%;
+  height: auto;
+}
+
+.thi-th .text-wrapper-6 {
+  font-size: 24px;
+  font-family: "Inter", Helvetica;
+  font-weight: 400;
+  color: #000000;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.thi-th .cau-TL {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.thi-th .overlap-group-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.thi-th .overlap-group-2 {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.thi-th .rectangle {
+  display: flex;
+}
+
+.thi-th .rectangle-2 {
+  width: 36px;
+  height: 36px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  border: 2px solid #757575;
+}
+
+.thi-th .text-wrapper-8 {
+  font-family: "Inter", Helvetica;
+  font-weight: 400;
+  color: #000000;
+  font-size: 24px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.thi-th .frame-5 {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.thi-th .div-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 25px;
+  background-color: #3a7ee1;
+  border-radius: 20px;
+}
+
+.thi-th .text-wrapper-9 {
+  font-family: "Inter", Helvetica;
+  font-weight: 400;
+  color: #ffffff;
+  font-size: 32px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+
+.thi-th .bng-cu-hi {
+  grid-row: 2;
+  grid-column: 1 / span 4; /* Span 4 columns */
+}
+
+.thi-th .frame-9 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.thi-th .frame-10 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.thi-th .number-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 17px;
+  background-color: #efefef;
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+.thi-th .text-wrapper-11 {
+  font-family: "Inter", Helvetica;
+  font-weight: 400;
+  color: #000000;
+  font-size: 26px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.thi-th .frame-11 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 3px 81px;
+  background-color: #6088e0;
+  border-radius: 20px;
+}
+
+.thi-th .text-wrapper-12 {
+  font-family: "Inter", Helvetica;
+  font-weight: 400;
+  color: #ffffff;
+  font-size: 26px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+/* Các trạng thái của nút và đáp án */
+.number-button.selected {
+  background-color: #4caf50; /* Màu xanh */
+}
+
+.rectangle-2 {
+  width: 100%;
+  height: 100%;
+}
+
+.rectangle-2.selected {
+  background-color: #4caf50; /* Màu xanh khi được chọn */
+}
+
+.rectangle-2:not(.selected) {
+  background-color: #ccc; /* Màu mặc định khi không được chọn */
+}
+.selected .rectangle-2 {
+  background-color: yellow;
+}
+
+
+.rectangle-2.correct {
+  background-color: green; /* Đổi màu nền thành xanh cho câu trả lời đúng */
+}
+
+.rectangle-2.wrong {
+  background-color: red; /* Đổi màu nền thành đỏ cho câu trả lời sai */
+}
+/* CSS cho modal */
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 1; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.4); /* Tạo hiệu ứng mờ khi modal xuất hiện */
+}
+
+/* Nội dung của modal */
+.modal-content-f {
+  background-color: #fefefe;
+  margin: 10% auto; /* Canh chỉnh modal vào giữa trang */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%; /* Độ rộng của modal */
+  max-width: 400px; /* Độ rộng tối đa của modal */
+  border-radius: 5px;
+}
+
+/* Đóng modal */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Input nghĩa */
+#meaning {
+  width: calc(100% - 22px); /* Độ rộng của input, trừ đi độ rộng của biên */
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Nút "Thêm vào Flashcard" */
+#submitFlashcard {
+  background-color: #4CAF50; /* Màu nền xanh lá cây */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+#submitFlashcard:hover {
+  background-color: #45a049; /* Màu nền xanh lá cây nhạt khi hover */
+}
+
+
+h1 {
+  text-align: center;
+  font-size: 30px;
+  margin: 10px;
+}
+
+.pre-page-button,
+.next-page-button {
+  cursor: pointer; /* Biến con trỏ thành mũi tên khi di chuột qua */
+  display: inline-block; /* Hiển thị thành phần như một khối hộp, nhưng không làm thay đổi cấu trúc của văn bản */
+  padding: 10px 20px; /* Khoảng cách lề bên trong của nút */
+  background-color: #4CAF50; /* Màu nền của nút */
+  color: white; /* Màu chữ của nút */
+  border: none; /* Loại bỏ đường viền */
+  border-radius: 5px; /* Bo tròn góc của nút */
+  margin-right: 10px; /* Khoảng cách giữa nút và các phần tử khác */
+  
+}
+
+.pre-page-button:hover,
+.next-page-button:hover {
+  background-color: #45a049; /* Màu nền của nút khi di chuột qua */
+}
+
+.pre-page-button:active,
+.next-page-button:active {
+  background-color: #3e8e41; /* Màu nền của nút khi được nhấn */
+}
+
+
+.page-buttons-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
