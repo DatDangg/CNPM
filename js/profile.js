@@ -1,52 +1,104 @@
 // Reference to the Firebase database
 const database = firebase.database();
 
-// Function to update profile information
 function updateProfile() {
-  // Get the logged-in user's username from local storage
   const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
   const username = loggedInUser.username;
 
-  // Update username in the HTML
   document.querySelector('.content__title h1').innerText = username;
 
-  // Get the test results from Firebase
   database.ref(`Users/${username}`).once('value', (snapshot) => {
     const userData = snapshot.val();
 
-    // If user data exists, update the description in the HTML
     if (userData) {
       let testDescriptions = '<table><tr><th>Test</th><th>Sub Test</th><th>Score</th><th>View</th></tr>';
-      
-      // Loop through each test
+
       for (const testKey in userData) {
-        // Check if the test starts with "Test"
         if (testKey.startsWith('Test')) {
           const test = userData[testKey];
           const testName = testKey.replace('_', ' ');
-          
-          // Loop through each subtest of the current test
+
           for (const subTestKey in test) {
             const subTest = test[subTestKey];
             const subTestName = subTestKey.replace('_', ' ');
             const score = subTest.score;
-            console.log(testKey.slice(4))
-            // Create the view link
             const viewLink = `../etest/results.html?test=${testKey.slice(4)}&username=${username}&attemptNumber=${subTestKey.slice(6)}`;
-            
-            // Append test name, subtest name, score, and view link to the description
+
             testDescriptions += `<tr><td>${testName}</td><td>${subTestName}</td><td>${score}</td><td><a href="${viewLink}">View</a></td></tr>`;
           }
         }
       }
-      
+
       testDescriptions += '</table>';
-      
-      // Update the description in the HTML
       document.querySelector('.content__description').innerHTML = testDescriptions;
     }
   });
 }
 
-// Call the updateProfile function when the page loads
+function showEditModal() {
+  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+  const username = loggedInUser.username;
+
+  database.ref(`Users/${username}`).once('value', (snapshot) => {
+    const userData = snapshot.val();
+    if (userData) {
+      document.getElementById('editUsername').value = username;
+      document.getElementById('editEmail').value = userData.email;
+    }
+  });
+
+  const editProfileModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+  editProfileModal.show();
+}
+
+function saveProfile() {
+  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+  const username = loggedInUser.username;
+
+  const newUsername = document.getElementById('editUsername').value;
+  const newEmail = document.getElementById('editEmail').value;
+
+  const currentPassword = document.getElementById('currentPassword').value;
+  const newPassword = document.getElementById('newPassword').value;
+  const confirmPassword = document.getElementById('confirmPassword').value;
+
+  if (newPassword && newPassword !== confirmPassword) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Lỗi',
+      text: 'Mật khẩu xác nhận không khớp!'
+    });
+    return;
+  }
+
+  database.ref(`Users/${username}`).once('value', (snapshot) => {
+    const userData = snapshot.val();
+    if (userData && userData.password === currentPassword) {
+      const updates = {
+        email: newEmail,
+      };
+      if (newPassword) {
+        updates.password = newPassword;
+      }
+
+      database.ref(`Users/${username}`).update(updates).then(() => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Thành công',
+          text: 'Thông tin cá nhân đã được cập nhật!'
+        }).then(() => {
+          localStorage.setItem('loggedInUser', JSON.stringify({ username: newUsername, email: newEmail }));
+          window.location.reload();
+        });
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Lỗi',
+        text: 'Mật khẩu hiện tại không đúng!'
+      });
+    }
+  });
+}
+
 window.onload = updateProfile;

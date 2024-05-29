@@ -28,36 +28,42 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
         
         const email = document.getElementById('exampleInputEmail1').value;
-        const password = document.getElementById('inputPassword1').value;
-        
+    const password = document.getElementById('inputPassword1').value;
+
+    console.log('Email:', email);
+    console.log('Password:', password);
+            
         firebase.database().ref('Users/').orderByChild('email').equalTo(email).once('value')
-            .then(function(snapshot) {
-                if (snapshot.exists()) {
-                    const userData = snapshot.val();
-                    const username = Object.keys(userData)[0];
-                    const user = userData[username];
-                    
-                    if (user.password === password) {
-                        // Đăng nhập thành công
-                        const modal = bootstrap.Modal.getInstance(document.getElementById('exampleModal'));
-                        modal.hide();
-                        
-                        // Lưu thông tin đăng nhập vào Local Storage
-                        localStorage.setItem('loggedInUser', JSON.stringify({ username: username }));
-                        // console.log(JSON.parse(localStorage.getItem('loggedInUser')));
-                        // Thực hiện các hành động sau khi đăng nhập thành công
-                        updateUIForLoggedInUser(username);
-                    } else {
-                        alert('Mật khẩu không đúng. Vui lòng thử lại.');
-                    }
-                } else {
-                    alert('Email không tồn tại trong hệ thống. Vui lòng đăng ký trước.');
-                }
-            })
-            .catch(function(error) {
-                console.error('Lỗi khi kiểm tra email trong Firebase: ', error);
-                alert('Đã xảy ra lỗi. Vui lòng thử lại sau.');
-            });
+    .then(function(snapshot) {
+        if (snapshot.exists()) {
+            const userData = snapshot.val();
+            console.log('User data:', userData); // Thêm dòng này để kiểm tra dữ liệu
+
+            const username = Object.keys(userData)[0];
+            const user = userData[username];
+            
+            if (user.password === password) {
+                // Đăng nhập thành công
+                const modal = bootstrap.Modal.getInstance(document.getElementById('exampleModal'));
+                modal.hide();
+                
+                // Lưu thông tin đăng nhập vào Local Storage
+                localStorage.setItem('loggedInUser', JSON.stringify({ username: username }));
+                
+                // Thực hiện các hành động sau khi đăng nhập thành công
+                updateUIForLoggedInUser(username);
+            } else {
+                alert('Mật khẩu không đúng. Vui lòng thử lại.');
+            }
+        } else {
+            alert('Email không tồn tại trong hệ thống. Vui lòng đăng ký trước.');
+        }
+    })
+    .catch(function(error) {
+        console.error('Lỗi khi kiểm tra email trong Firebase: ', error);
+        alert('Đã xảy ra lỗi. Vui lòng thử lại sau.');
+    });
+
     });
 
     const signupForm = document.getElementById('form2');
@@ -143,3 +149,37 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 });
+(function() {
+    emailjs.init('S55P341Zxv_KDoxYg');  // Thay YOUR_PUBLIC_KEY bằng public key thực tế của bạn
+})();
+
+// Function to generate random code
+function generateRandomCode() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+// Function to send email with EmailJS
+function sendEmail(email, code) {
+    emailjs.send("service_n57axpe", "template_c5nvl8w", {  // Thay YOUR_SERVICE_ID và YOUR_TEMPLATE_ID bằng service ID và template ID thực tế của bạn
+        to_email: email,
+        verification_code: code
+    })
+    .then(() => {
+        document.getElementById('message').textContent = "Mã xác nhận đã được gửi!";
+        document.getElementById('verifyCodeForm').style.display = 'block';
+        document.getElementById('passwordResetForm').style.display = 'none';
+    })
+    .catch((error) => {
+        document.getElementById('message').textContent = "Đã xảy ra lỗi: " + error.message;
+    });
+}
+
+// Event listener for form submission
+document.getElementById('passwordResetForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const email = document.getElementById('email').value;
+    const code = generateRandomCode();
+    sendEmail(email, code);
+    localStorage.setItem('verificationCode', code);
+});
+

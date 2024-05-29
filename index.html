@@ -22,6 +22,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;600;700&family=Roboto+Slab&display=swap"
     rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script src="js/index.js"></script>
 </head>
 
@@ -91,7 +92,7 @@
                                   <input type="password" id="inputPassword1" placeholder="Password"
                                     class="form-control ps-3" aria-describedby="passwordHelpBlock">
                                   <div id="passwordHelpBlock" class="form-text text-center">
-                                    <a href="#" class="password">Forgot Password?</a>
+                                    <a href="#" class="password" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password?</a>
                                   </div>
                                 </div>
                                 <div class="d-grid my-3">
@@ -149,6 +150,52 @@
       </div>
     </div>
   </nav>
+
+  <!-- Forgot Password Modal -->
+  <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="forgotPasswordStep1">
+            <h5 class="modal-title" id="forgotPasswordModalLabel">Forgot Password</h5>
+            <form id="forgotPasswordForm" class="form-group flex-wrap p-3">
+              <div class="form-input col-lg-12 my-4">
+                <label for="forgotPasswordEmail" class="form-label fs-6 text-uppercase fw-bold text-black">Email Address</label>
+                <input type="email" id="forgotPasswordEmail" name="email" placeholder="Email" class="form-control ps-3" required>
+              </div>
+              <div class="d-grid my-3">
+                <button type="submit" class="btn btn-primary px-5 py-3">Send Reset Code</button>
+              </div>
+            </form>
+          </div>
+          <div id="forgotPasswordStep2" class="d-none">
+            <h5 class="modal-title" id="forgotPasswordModalLabel">Enter Reset Code</h5>
+            <form id="verifyResetCodeForm" class="form-group flex-wrap p-3">
+              <div class="form-input col-lg-12 my-4">
+                <label for="resetCodeInput" class="form-label fs-6 text-uppercase fw-bold text-black">Reset Code</label>
+                <input type="text" id="resetCodeInput" placeholder="Reset Code" class="form-control ps-3" required>
+              </div>
+              <div class="form-input col-lg-12 my-4">
+                <label for="newPasswordInput" class="form-label fs-6 text-uppercase fw-bold text-black">New Password</label>
+                <input type="password" id="newPasswordInput" placeholder="New Password" class="form-control ps-3" required>
+              </div>
+              <div class="form-input col-lg-12 my-4">
+                <label for="confirmNewPasswordInput" class="form-label fs-6 text-uppercase fw-bold text-black">Confirm New Password</label>
+                <input type="password" id="confirmNewPasswordInput" placeholder="Confirm New Password" class="form-control ps-3" required>
+              </div>
+              <div class="d-grid my-3">
+                <button type="submit" class="btn btn-primary px-5 py-3">Update Password</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <section id="hero">
     <div class="container-fluid">
       <div class="row">
@@ -179,6 +226,73 @@
   <script src="js/plugins.js"></script>
   <script src="js/script.js"></script>
   <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+  <script>
+    (function() {
+      emailjs.init("S55P341Zxv_KDoxYg");
+    })();
+    var resetCode; // To store the reset code
+    var email; // To store the email
+
+    document.getElementById('forgotPasswordForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      email = document.getElementById('forgotPasswordEmail').value;
+      resetCode = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit random number
+
+      var templateParams = {
+        to_email: email,
+        verification_code: resetCode
+      };
+
+      emailjs.send('service_n57axpe', 'template_c5nvl8w', templateParams)
+        .then(function(response) {
+          alert('Reset code sent successfully to ' + email);
+          document.getElementById('forgotPasswordStep1').classList.add('d-none');
+          document.getElementById('forgotPasswordStep2').classList.remove('d-none');
+        }, function(error) {
+          console.error('FAILED...', error);
+          alert('Failed to send reset code. Please try again later.');
+        });
+    });
+
+    document.getElementById('verifyResetCodeForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      var enteredCode = document.getElementById('resetCodeInput').value;
+      var newPassword = document.getElementById('newPasswordInput').value;
+      var confirmNewPassword = document.getElementById('confirmNewPasswordInput').value;
+
+      if (enteredCode == resetCode) {
+        if (newPassword === confirmNewPassword) {
+          var database = firebase.database();
+          var usersRef = database.ref('Users');
+          
+          // Find user by email and update the password
+          usersRef.orderByChild('email').equalTo(email).once('value', function(snapshot) {
+            if (snapshot.exists()) {
+              var userData = snapshot.val();
+              var userKey = Object.keys(userData)[0]; // Get the key of the user
+              usersRef.child(userKey).update({
+                password: newPassword
+              }).then(function() {
+                alert('Password updated successfully.');
+                // Hide modal
+                $('#forgotPasswordModal').modal('hide');
+              }).catch(function(error) {
+                console.error('Error updating password:', error);
+                alert('Failed to update password. Please try again later.');
+              });
+            } else {
+              alert('User not found.');
+            }
+          });
+        } else {
+          alert('Passwords do not match.');
+        }
+      } else {
+        alert('Invalid reset code.');
+      }
+    });
+  </script>
   <!-- <script>
     localStorage.removeItem("loggedInUser");
   </script> -->
