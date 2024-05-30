@@ -24,7 +24,7 @@ if (!testNumber) {
 
 let selectedAnswers = {};
 function loadData(questionNumber) {
-  const testRef = database.ref(`Test${testNumber}/`).child(questionNumber);
+  const testRef = database.ref(`Test/Test${testNumber}/`).child(questionNumber);
 
   testRef.once("value", function (snapshot) {
     const data = snapshot.val();
@@ -35,7 +35,7 @@ function loadData(questionNumber) {
         currentCheckValue = questionNumber;
       }
       const relatedQuestionsRef = database
-        .ref(`Test${testNumber}/`)
+        .ref(`Test/Test${testNumber}/`)
         .orderByChild("check")
         .equalTo(currentCheckValue);
       relatedQuestionsRef.once("value", function (relatedSnapshot) {
@@ -407,30 +407,50 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Lắng nghe sự kiện click vào nút "Thêm vào Flashcard"
-  document
-    .getElementById("submitFlashcard")
-    .addEventListener("click", function () {
-      const vocabulary = document.getElementById("vocabulary").textContent;
-      const meaning = document.getElementById("meaning").value;
-      const flashcardRef = firebase
-        .database()
-        .ref("MyFlashCard")
-        .child(vocabulary);
+  document.getElementById("submitFlashcard").addEventListener("click", function () {
+    const vocabulary = document.getElementById("vocabulary").textContent;
+    const meaning = document.getElementById("meaning").value;
+    const selectedBranch = document.getElementById("selectedBranch").value;
+    const flashcardRef = firebase.database().ref(`Users/${username}/fcard/${selectedBranch}`).child(vocabulary);
+    
+    // Kiểm tra xem người dùng đã chọn nhánh hiện có hay nhập tên mới
+    if (selectedBranch) {
+        // Thêm flashcard vào nhánh đã chọn hoặc tạo mới
+    
       flashcardRef.set({
-        meaning: meaning,
-      });
-      // Thêm logic xử lý khi click vào đây, ví dụ: thêm từ và nghĩa vào Flashcard
-      alert(
-        "Đã thêm từ '" +
-          vocabulary +
-          "' với nghĩa '" +
-          meaning +
-          "' vào Flashcard!"
-      );
-      // Ẩn modal sau khi thêm vào Flashcard thành công
-      document.getElementById("flashcardModal").style.display = "none";
-    });
+        nghia: meaning,
+      
+        }).then(() => {
+            // Thêm thành công, hiển thị thông báo
+            alert(`Đã thêm từ '${vocabulary}' với nghĩa '${meaning}' vào nhánh '${selectedBranch}'!`);
+            // Ẩn modal sau khi thêm vào Flashcard thành công
+            document.getElementById("flashcardModal").style.display = "none";
+        }).catch((error) => {
+            console.error("Error adding flashcard: ", error);
+        });
+    } else {
+        // Người dùng chưa chọn hoặc nhập tên nhánh, hiển thị cảnh báo
+        alert("Vui lòng chọn hoặc nhập tên nhánh trước khi thêm vào Flashcard!");
+    }
 });
+
+});
+// Lấy tham chiếu đến thẻ select
+document.addEventListener("DOMContentLoaded", function() {
+const selectedBranchDropdown = document.getElementById("selectedBranch");
+
+// Lấy danh sách các nhánh từ cơ sở dữ liệu Firebase
+const branchesRef = firebase.database().ref(`Users/${username}/fcard`);
+branchesRef.once('value').then(function(snapshot) {
+  snapshot.forEach((childSnapshot) => {
+    const branchName = childSnapshot.key;
+    const option = document.createElement("option");
+    option.text = branchName;
+    option.value = branchName;
+    selectedBranchDropdown.appendChild(option);
+});
+});
+})
 function submitTest() {
   getNewTestAttempt((attemptNumber) => {
     const userTestRef = database.ref(

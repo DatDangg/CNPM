@@ -1,8 +1,8 @@
 
 
-const dbRef = firebase.database().ref();
+const dbRef = firebase.database().ref(`Test/`);
 
-const username = "dat"; // Replace with logic to get the current logged-in user
+const username = JSON.parse(localStorage.getItem('loggedInUser')).username; // Replace with the actual username or fetch from user context
 
 // Get user's data
 const userRef = firebase.database().ref(`Users/${username}`);

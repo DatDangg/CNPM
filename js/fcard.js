@@ -86,3 +86,4 @@ const action = (value) => {
 };
 
 getData();
+

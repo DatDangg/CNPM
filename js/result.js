@@ -13,7 +13,7 @@ if (!testNumber || !username) {
 const userTestRef = database.ref(
   `Users/${username}/Test${testNumber}/Test${testNumber}_${attemptNumber}`
 );
-const testRef = database.ref(`Test${testNumber}/`);
+const testRef = database.ref(`Test/Test${testNumber}/`);
 
 Promise.all([userTestRef.once("value"), testRef.once("value")])
   .then(([userSnapshot, testSnapshot]) => {

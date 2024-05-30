@@ -84,13 +84,20 @@ function displayMyFlashcards() {
                         flashcard.setAttribute('data-path', `Users/${loggedInUser.username}/fcard/${flashcardId}`);
 
                         const flashcardData = data[flashcardId];
-                        for (const category in flashcardData) {
-                            if (flashcardData.hasOwnProperty(category)) {
+                        let wordCount = 0;
+
+                for (const word in flashcardData) {
+                    if (flashcardData.hasOwnProperty(word)) {
+                        wordCount++;
+                    }
+                }
+                        
                                 flashcard.innerHTML += `
                                     <h2>${flashcardId}</h2>
+                                    <p>${wordCount} từ</p>
                                 `;
-                            }
-                        }
+                            
+                        
                         flashcardsGrid.appendChild(flashcard);
                     }
                 }

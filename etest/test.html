@@ -173,23 +173,27 @@
       </div>
       <div id="flashcardModal" class="modal">
         <div class="modal-content-f">
-          <span class="close">&times;</span>
-          <h1>Tạo flashcard</h1>
-          <div>
-            <label for="vocabulary">Từ vựng:</label>
-            <span id="vocabulary"></span>
-          </div>
-          <div>
-            <label for="meaning">Nghĩa:</label>
-            <input
-              type="text"
-              id="meaning"
-              placeholder="Nhập nghĩa của từ..."
-            />
-          </div>
-          <button id="submitFlashcard">Thêm vào Flashcard</button>
+            <span class="close">&times;</span>
+            <h1>Tạo flashcard</h1>
+            <div>
+                <label for="vocabulary">Từ vựng:</label>
+                <span id="vocabulary"></span>
+            </div>
+            <div>
+                <label for="meaning">Nghĩa:</label>
+                <input type="text" id="meaning" placeholder="Nhập nghĩa của từ...">
+            </div>
+            <div>
+                <label for="selectedBranch">Chọn hoặc nhập tên nhánh:</label>
+                <select id="selectedBranch">
+                    <option value="">-- Chọn hoặc nhập tên nhánh --</option>
+                    <!-- Các tùy chọn sẽ được thêm bằng mã JavaScript sau -->
+                </select>
+            </div>
+            <button id="submitFlashcard">Thêm vào Flashcard</button>
         </div>
-      </div>
+    </div>
+    
       <button onclick="submitTest()">Nộp bài</button>
       <div class="result"></div>
     </div>
