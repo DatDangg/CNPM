@@ -218,7 +218,7 @@ function newGame() {
 }
 
 function toggleModal() {
-    const modal = document.querySelector(".modal");
+    const modal = document.querySelector(".modal_match");
     modal.classList.toggle("show-modal");
 }
 const startGameButton = document.querySelector('.start-game');

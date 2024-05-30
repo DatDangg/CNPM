@@ -102,7 +102,7 @@ html, body {
     transition: 0.1s;
 }
 
-.modal {
+.modal_match {
     z-index: 1;
     position: fixed;
     left: 0;
@@ -116,7 +116,7 @@ html, body {
     transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
 }
 
-.modal-content {
+.modal-content_match {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -186,7 +186,7 @@ html, body {
     .show_match {
         font-size: 20px;
     }
-    .modal-content {
+    .modal-content_match {
         width: 15rem;
     }
     .tick {
