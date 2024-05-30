@@ -20,7 +20,7 @@ const getData = async () => {
     const path = localStorage.getItem('selectedFlashcardPath');
     const snapshot = await database.ref(path).once('value');
     const data = snapshot.val();
-    console.log("data", data);
+    // console.log("data", data);
     
     const listContent = Object.keys(data).map((key, index) => {
       const item = data[key];
@@ -62,7 +62,7 @@ function flipCard(card) {
 
 const action = (value) => {
   const containerSlide = document.querySelector(".container-slide");
-  console.log("containerCard", containerSlide.scrollLeft);
+  // console.log("containerCard", containerSlide.scrollLeft);
   const maxScrollLeft = containerSlide.scrollWidth - containerSlide.clientWidth;
   if (value === "next" && containerSlide.scrollLeft < maxScrollLeft) {
     containerSlide.scrollLeft += 316;
@@ -82,7 +82,7 @@ const action = (value) => {
     containerCardActive.className = `container-card active ${isFlip ? "" : "flip"}`;
   }
 
-  console.log("maxScrollLeft", maxScrollLeft);
+  // console.log("maxScrollLeft", maxScrollLeft);
 };
 
 getData();

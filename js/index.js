@@ -12,6 +12,23 @@ firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 document.addEventListener('DOMContentLoaded', function() {
+    const navLinks = {
+        "index.html": "home",
+        "etest.html": "test",
+        "test.html": "test",
+        "maincard.html": "flashcard",
+        "fcard.html": "flashcard",
+        "hangmangame.html": "game",
+        "flipcardgame.html": "game"
+    };
+
+    // Get the current path
+    const currentPath = window.location.pathname.split("/").pop();
+
+    // Set the active class to the matching nav link
+    if (navLinks[currentPath]) {
+        document.getElementById(navLinks[currentPath]).classList.add("active");
+    }
     const loginForm = document.getElementById('form1');
     const navUserAction = document.getElementById('nav-user-action');
     const heroSection = document.getElementById('hero');
@@ -30,14 +47,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const email = document.getElementById('exampleInputEmail1').value;
     const password = document.getElementById('inputPassword1').value;
 
-    console.log('Email:', email);
-    console.log('Password:', password);
+    // console.log('Email:', email);
+    // console.log('Password:', password);
             
     firebase.database().ref('Users/').orderByChild('email').equalTo(email).once('value')
     .then(function(snapshot) {
         if (snapshot.exists()) {
             const userData = snapshot.val();
-            console.log('User data:', userData); // Thêm dòng này để kiểm tra dữ liệu
+            // console.log('User data:', userData); // Thêm dòng này để kiểm tra dữ liệu
 
             const username = Object.keys(userData)[0];
             const user = userData[username];

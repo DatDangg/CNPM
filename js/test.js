@@ -11,13 +11,11 @@ firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 localStorage.removeItem("selectedAnswers")
-console.log();
 const database = firebase.database();
 const urlParams = new URLSearchParams(window.location.search);
 const testNumber = urlParams.get("test");
 
 const username = JSON.parse(localStorage.getItem('loggedInUser')).username; // Replace with the actual username or fetch from user context
-console.log(username)
 if (!testNumber) {
   console.error("Test number not provided!");
 }
@@ -322,11 +320,11 @@ function getAnswerElement(questionNumber, answer) {
 function saveAnswerToFirebase(questionNumber, answer) {
   const userTestRef = database.ref(`Users/${username}/Test${testNumber}`);
   userTestRef.child(questionNumber).set(answer, (error) => {
-    if (error) {
-      console.error("Error saving answer:", error);
-    } else {
-      console.log("Answer saved successfully");
-    }
+    // if (error) {
+    //   console.error("Error saving answer:", error);
+    // } else {
+    //   console.log("Answer saved successfully");
+    // }
   });
 }
 
@@ -470,7 +468,7 @@ function submitTest() {
       if (error) {
         console.error("Error saving answer:", error);
       } else {
-        console.log("Answer saved successfully");
+        // console.log("Answer saved successfully");
         localStorage.removeItem("selectedAnswers");
         const urlParams = new URLSearchParams({
           test: testNumber,

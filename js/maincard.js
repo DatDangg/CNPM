@@ -20,7 +20,7 @@ const myFlashcardBtn = document.querySelector('.my-flashcard');
 
 // Function to open fcard.html with the given path
 function openFlashcardDetail(path) {
-    console.log("Opening path: ", path);
+    // console.log("Opening path: ", path);
     // Store the path in localStorage
     localStorage.setItem('selectedFlashcardPath', path);
     // Open fcard.html

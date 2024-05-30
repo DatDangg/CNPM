@@ -113,11 +113,12 @@ Promise.all([userTestRef.once("value"), testRef.once("value")])
     const scoreRef = database.ref(`Users/${username}/Test${testNumber}/Test${testNumber}_${attemptNumber}`);
     scoreRef.update({
       score: score
-    }).then(() => {
-      console.log("Score saved successfully.");
-    }).catch((error) => {
-      console.error("Error saving score:", error);
-    });
+    })
+    // .then(() => {
+    //   console.log("Score saved successfully.");
+    // }).catch((error) => {
+    //   console.error("Error saving score:", error);
+    // });
   })
   .catch((error) => {
     console.error("Error fetching test data:", error);

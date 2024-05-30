@@ -10,14 +10,14 @@ let userTestKeys = [];
 
 userRef.once("value", function(userSnapshot) {
     const userData = userSnapshot.val();
-    console.log("Retrieved user data from Firebase:", userData);
+    // console.log("Retrieved user data from Firebase:", userData);
     userTestKeys = userData.testkey ? userData.testkey.split(',').map(key => key.trim()) : [];
-    console.log("User's test keys:", userTestKeys);
+    // console.log("User's test keys:", userTestKeys);
 
     // Get tests data
     dbRef.once("value", function(snapshot) {
         const tests = snapshot.val();
-        console.log("Retrieved tests from Firebase:", tests);
+        // console.log("Retrieved tests from Firebase:", tests);
         const frame = document.createElement("div");
         frame.className = "frame";
         let frame2 = document.createElement("div");
@@ -25,12 +25,12 @@ userRef.once("value", function(userSnapshot) {
 
         // Filter tests with keys starting with "Test"
         const filteredTests = Object.keys(tests).filter(key => key.startsWith("Test"));
-        console.log("Filtered tests:", filteredTests);
+        // console.log("Filtered tests:", filteredTests);
 
         for (let i = 0; i < filteredTests.length; i++) {
             const testKey = filteredTests[i];
             const testData = tests[testKey];
-            console.log(`Processing ${testKey}:`, testData);
+            // console.log(`Processing ${testKey}:`, testData);
 
             const key = i + 1;
             const frame3 = document.createElement("div");
@@ -38,7 +38,7 @@ userRef.once("value", function(userSnapshot) {
             frame3.setAttribute("data-test-number", i + 1);
             frame3.setAttribute("data-test-key", testData.key ? testData.key : "");
             frame3.addEventListener("click", function () {
-                console.log(`Clicked on test ${key}, key:`, testData.key);
+                // console.log(`Clicked on test ${key}, key:`, testData.key);
                 openTestPage(key, testData.key, userTestKeys, userRef);
             });
             const rectangleImg = document.createElement("img");
@@ -65,10 +65,10 @@ userRef.once("value", function(userSnapshot) {
 
 function openTestPage(testKey, testKeyValue, userTestKeys, userRef) {
     if (testKeyValue && !userTestKeys.includes(testKeyValue)) {
-        console.log("Showing payment modal for test:", testKey);
+        // console.log("Showing payment modal for test:", testKey);
         showPaymentModal(testKeyValue, userRef);
     } else {
-        console.log("Navigating to test page for test:", testKey);
+        // console.log("Navigating to test page for test:", testKey);
         window.location.href = `test.html?test=${testKey}`;
     }
 }
@@ -99,7 +99,7 @@ function checkPayment(testKeyValue, userRef) {
     fetch('https://dangkyhoctlu.000webhostapp.com/test.php')
         .then(response => response.json())
         .then(data => {
-            console.log("Payment data:", data);
+            // console.log("Payment data:", data);
             if (data.success) {
                 const transaction = data.transactions.find(transaction => transaction.account_number === '4220112003' && parseFloat(transaction.amount_in) >= 50000);
                 if (transaction) {
