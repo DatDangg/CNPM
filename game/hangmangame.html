@@ -7,212 +7,170 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Permanent+Marker" rel="stylesheet">
    <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
-  <style>
-    html,
-body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  background: url("https://res.cloudinary.com/dshmwg7vw/image/upload/v1550486966/OCCNFD0.jpg");
-  background-size: contain;
-  background-repeat: repeat;
-  font-family: "Permanent Marker", cursive;
-  position: relative;
-}
-
-main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.wrapper,
-.button-wrapper {
-  text-align: center;
-  margin: 10px;
-}
-
-.outside-wrapper {
-  margin-bottom: 20px;
-  text-align:center;
-}
-
-.outside-wrapper:nth-child(2) {
-  width: 100%;
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  max-height: 300px;
-}
-
-.outside-wrapper:nth-child(3) {
-  margin-bottom: auto;
-  height: 178px;
-  width: 100%;
-}
-
-.hidden {
-  display: none;
-}
-
-#statusMessage {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  padding: 10px;
-  box-sizing: border-box;
-  text-align: center;
-  height: 94px;
-}
-
-svg {
-  transform: rotate(-1deg);
-}
-
-.lives {
-  width: 40px;
-  height: auto;
-}
-
-.hiddenLife {
-  display: inline-block;
-  animation: lifeAway 0.6s forwards;
-}
-
-@keyframes lifeAway {
-  0% {
-    opacity: 1;
-  }
-
-  10% {
-    transform: scale(1.5) rotate(0deg);
-  }
-
-  50% {
-    transform: scale(0.5) rotate(720deg);
-  }
-
-  100% {
-    transform: scale(0) rotate(720deg);
-    opacity: 0;
-    display: none;
-  }
-}
-
-#categoryName {
-  font-size: 20px;
-  margin: 0 5px 5px 5px;
-}
-
-#warningText {
-  color: rgb(239, 83, 80);
-}
-
-.warning {
-  height: 20px;
-}
-
-#guessWrapper p {
-  font-size: 40px;
-  display: inline-block;
-  letter-spacing: 15px;
-  margin-bottom: 20px;
-  margin-top: 0;
-  color: green;
-}
-
-.inside-wrapper {
-  text-align: center;
-}
-
-.inside-wrapper:first-child {
-  width: 250px;
-}
-
-.inside-wrapper:last-child {
-  width: 400px;
-  padding-right: 20px;
-  box-sizing: border-box;
-  text-align: right;
-  display: flex;
-  flex-direction: column;
-}
-
-.inside-wrapper div:last-child {
-  margin-top: auto;
-}
-
-#wrongLetters {
-  text-align: right;
-}
-
-#wrongLetters span {
-  text-align: right;
-  color: rgb(239, 83, 80);
-  letter-spacing: 5px;
-}
-
-@media (max-width: 470px) {
-  #categoryName {
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-
-  .lives {
-    width: 25px;
-    height: auto;
-  }
-
-  #guessWrapper p {
-    font-size: 20px;
-  }
-}
-
-input {
-  border-radius: 7px;
-  border-style: none;
-  border: 1px solid gray;
-  text-align: center;
-  transition: 0.2s linear;
-}
-
-input:focus {
-  outline: none;
-  border: 1px solid green;
-}
-
-button {
-  transition: 0.2s linear;
-  outline: none;
-  border-style: none;
-  background-color: darkgray;
-  color: black;
-  border-radius: 7px;
-}
-
-button:hover,
-button:focus {
-  background-color: green;
-  outline: none;
-  color: white;
-}
-
-input,
-button {
-  padding: 5px 10px;
-  box-sizing: border-box;
-  letter-spacing: 3px;
-}
-  </style>
+  <link rel="stylesheet" href="../css/hangman.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+  <link rel="stylesheet" type="text/css" href="../icomoon/icomoon.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="../css/vendor.css">
+  <link rel="stylesheet" type="text/css" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;600;700&family=Roboto+Slab&display=swap"
+    rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
+  <script src="../js/index.js"></script>
 </head>
 
 <body>
+  <header>
+    <nav class="main-menu d-flex navbar fixed-top navbar-expand-lg p-2 py-3 p-lg-4 py-lg-4 main">
+      <div class="container-fluid">
+        <div class="main-logo">
+          <a href="../index.html">
+            <img src="../images/logo-no-background.png" alt="logo" class="img-fluid" id="logo">
+          </a>
+        </div>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+          <div class="offcanvas-header">
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body justify-content-end">
+            <ul class="navbar-nav menu-list list-unstyled align-items-lg-center d-flex gap-md-3 mb-0">
+              <li class="nav-item">
+                <a href="../index.html" class="nav-link mx-2 active">Home</a>
+              </li>
+              <li class="nav-item">
+                <a href="../etest/etest.html" class="nav-link mx-2">Test</a>
+              </li>
+              <li class="nav-item">
+                <a href="../flashcard/maincard.html" class="nav-link mx-2">Flashcard</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link mx-2 dropdown-toggle align-items-center show" role="button" id="courses" data-bs-toggle="dropdown" aria-expanded="false">Game</a>
+                <ul class="dropdown-menu" aria-labelledby="courses" data-bs-popper="static">
+                  <li><a href="../game/hangmangame.html" class="dropdown-item">Hang man</a></li>
+                  <li><a href="../game/flipcardgame.html" class="dropdown-item">Card match</a></li>
+                </ul>
+              </li>
+  
+              <div class="d-none d-lg-flex align-items-center ms-5">
+                <ul class="d-flex justify-content-end list-unstyled m-0" id="nav-user-action">
+                  <li>
+                    <a class="btn btn-outline-dark mx-3 p-3" href="#" data-bs-toggle="modal"
+                      data-bs-target="#exampleModal">Login/Signup</a>
+                  </li>
+                  <!-- Modal -->
+                  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="tabs-listing mt-4">
+                            <nav>
+                              <div class="nav nav-tabs d-flex justify-content-center border-0" id="nav-tab" role="tablist">
+                                <button class="btn btn-outline-primary px-5 py-3 me-3 active" id="nav-sign-in-tab"
+                                  data-bs-toggle="tab" data-bs-target="#nav-sign-in" type="button" role="tab"
+                                  aria-controls="nav-sign-in" aria-selected="true">Log In</button>
+                                <button class="btn btn-outline-primary px-5 py-3" id="nav-register-tab" data-bs-toggle="tab"
+                                  data-bs-target="#nav-register" type="button" role="tab" aria-controls="nav-register"
+                                  aria-selected="false">Sign Up</button>
+                              </div>
+                            </nav>
+                            <div class="tab-content" id="nav-tabContent">
+                              <div class="tab-pane fade active show" id="nav-sign-in" role="tabpanel"
+                                aria-labelledby="nav-sign-in-tab">
+                                <form id="form1" class="form-group flex-wrap p-3 ">
+                                  <div class="form-input col-lg-12 my-4">
+                                    <label for="exampleInputEmail1"
+                                      class="form-label fs-6 text-uppercase fw-bold text-black">Email Address</label>
+                                    <input type="text" id="exampleInputEmail1" name="email" placeholder="Email"
+                                      class="form-control ps-3">
+                                  </div>
+                                  <div class="form-input col-lg-12 my-4">
+                                    <label for="inputPassword1"
+                                      class="form-label fs-6 text-uppercase fw-bold text-black">Password</label>
+                                    <input type="password" id="inputPassword1" placeholder="Password"
+                                      class="form-control ps-3" aria-describedby="passwordHelpBlock">
+                                    <div id="passwordHelpBlock" class="form-text text-center">
+                                      <a href="#" class="password">Forgot Password?</a>
+                                    </div>
+                                  </div>
+                                  <div class="d-grid my-3">
+                                    <button type="submit" class="btn btn-primary px-5 py-3">Log In</button>
+                                  </div>
+                                </form>
+                              </div>
+                              <div class="tab-pane fade" id="nav-register" role="tabpanel" aria-labelledby="nav-register-tab">
+                                <form id="form2" class="form-group flex-wrap p-3 ">
+                                  <div class="form-input col-lg-12 my-4">
+                                    <label for="InputUsername2"
+                                      class="form-label fs-6 fw-bold text-black">Username</label>
+                                    <input type="text" id="InputUsername2" placeholder="Username"
+                                      class="form-control ps-3">
+                                  </div>
+                                  <div class="form-input col-lg-12 my-4">
+                                    <label for="InputEmail2"
+                                      class="form-label fs-6 fw-bold text-black">Email Address</label>
+                                    <input type="text" id="InputEmail2" name="email" placeholder="Email" 
+                                      class="form-control ps-3">
+                                  </div>
+                                  <div class="form-input col-lg-12 my-4">
+                                    <label for="inputContact2"
+                                      class="form-label fs-6 fw-bold text-black">Contact</label>
+                                    <input type="text" id="inputContact2" placeholder="Contact"
+                                      class="form-control ps-3">
+                                  </div>
+                                  <div class="form-input col-lg-12 my-4">
+                                    <label for="inputPassword2"
+                                      class="form-label fs-6 fw-bold text-black">Password</label>
+                                    <input type="password" id="inputPassword2" placeholder="Password"
+                                      class="form-control ps-3">
+                                  </div>
+                                  <div class="form-input col-lg-12 my-4">
+                                    <label for="inputCpass2"
+                                      class="form-label fs-6 fw-bold text-black">Confirm Password</label>
+                                    <input type="password" id="inputCpass2" placeholder="Confirm Password"
+                                      class="form-control ps-3">
+                                  </div>
+                                  <div class="d-grid my-3">
+                                    <button type="submit" class="btn btn-primary px-5 py-3">Sign Up</button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ul>
+              </div>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
   <main>
     <div class="outside-wrapper">
-      <h1 id="statusMessage">Vanilla JavaScript Hangman Game </h1>
+      <h1 id="statusMessage"></h1>
+      <div class="level-selection">
+        <label for="level">Chọn mức độ: </label>
+        <select id="level">
+            <option value="A1">A1</option>
+            <option value="A2">A2</option>
+            <option value="B1">B1</option>
+            <option value="B2">B2</option>
+            <option value="C1">C1</option>
+            <option value="C2">C2</option>
 
+        </select>
+        <button class="start-game">Bắt đầu trò chơi</button>
+    </div>
     </div>
 
     <div class="outside-wrapper">
@@ -254,7 +212,7 @@ button {
     </div>
     <div class="outside-wrapper">
       <div class="wrapper">
-        <p id="categoryName">Category:smtg</p>
+        <p id="categoryName">Category</p>
         <div id="guessWrapper">
         </div>
       </div>
@@ -270,199 +228,11 @@ button {
       <button type="button" id="newGame">New Game</button>
     </div>
   </main>
-  <script>
-    const firebaseConfig = {
-    apiKey: "AIzaSyA1ztc1CsOdCqBoiegZcgSRevWaahaYRL4",
-    authDomain: "toeic-4b09a.firebaseapp.com",
-    databaseURL: "https://toeic-4b09a-default-rtdb.firebaseio.com",
-    projectId: "toeic-4b09a",
-    storageBucket: "toeic-4b09a.appspot.com",
-    messagingSenderId: "394200216862",
-    appId: "1:394200216862:web:0aa3bbfa97655dc5bec50f"
-};
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
-// Get a reference to the database service
-const db = firebase.database();
-db.ref('game/hangman').once('value').then((snapshot) => {
-    const data = snapshot.val();
-    const wordsArray = data.words;
-    const categoryArray = data.categories;
-
-    // Start the game with the retrieved data
-    startGame(wordsArray, categoryArray);
-});
-
-function startGame(wordsArray, categoryArray) {
-    let newGame = new Hangman(wordsArray, categoryArray);
-    newGame.setupNewWord();
-}
-class Hangman {
-    constructor(wordsArray, categoryArray) {
-        this.wordsArray = wordsArray;
-        this.categoryArray = categoryArray;
-        this.random = Math.floor(Math.random() * this.wordsArray.length);
-        this.wordToGuess = this.wordsArray[this.random];
-        this.category = this.categoryArray[this.random];
-        this.placeholderArray = Array(this.wordToGuess.length).fill("_");
-        this.guessed = [];
-        this.lives = 6;
-    }
-    setupNewWord() {
-        let guessWrapper = document.getElementById("guessWrapper");
-        let placeholderP = document.createElement("p");
-        let category = document.getElementById("categoryName");
-        category.innerHTML = this.category;
-
-        placeholderP.setAttribute("id", "placeholderP");
-        placeholderP.innerHTML = this.placeholderArray.join("");
-        guessWrapper.appendChild(placeholderP);
-
-        let userLetter = document.getElementById("userLetter");
-        userLetter.onkeypress = this.handleKeyPress.bind(this);
-
-        let guessButton = document.getElementById("guessButton");
-        guessButton.onclick = this.handleClick.bind(this);
-    }
-    handleClick() {
-        let userLetterInput = document.getElementById("userLetter");
-        let userLetter = userLetterInput.value.toUpperCase();
-        let placeholderP = document.getElementById("placeholderP");
-        let warningText = document.getElementById("warningText");
-        let wrongLetters = document.querySelector("#wrongLetters span");
-
-        if (!/[a-zA-Z]/.test(userLetter)) {
-            unhideElements("hidden", warningText);
-            warningText.innerHTML = "Please enter a letter from A-Z";
-        } else {
-            hideElements("hidden", warningText);
-
-            if (this.wordToGuess.indexOf(userLetter) > -1 && this.guessed.indexOf(userLetter) == -1) {
-                checkGuess(this.wordToGuess, userLetter);
-                hideElements("hidden", warningText);
-            } else if (this.wordToGuess.indexOf(userLetter) == -1 && this.guessed.indexOf(userLetter) == -1) {
-                hideElements("hidden", warningText);
-                unhideElements("hidden", wrongLetters.parentNode);
-                wrongLetters.innerHTML += userLetter;
-                this.lives--;
-                hangerDraw(this.lives);
-                hideLives(this.lives);
-            } else {
-                unhideElements("hidden", warningText);
-                warningText.innerHTML = "";
-                warningText.innerHTML += "Already typed " + userLetter;
-            }
-            if (this.guessed.indexOf(userLetter) == -1) {
-                this.guessed.push(userLetter);
-            }
-
-            if (Array.from(placeholderP.innerHTML).indexOf("_") == -1) {
-                gameOver(true);
-            } else if (this.lives == 0) {
-                gameOver();
-            }
-        }
-        userLetterInput.value = "";
-    }
-    handleKeyPress(e) {
-        var guessButton = document.getElementById("guessButton");
-        if (e.keyCode === 13) {
-            guessButton.click();
-        }
-    }
-}
-
-function checkGuess(wordToGuess, userLetter) {
-    let placeholderP = document.getElementById("placeholderP");
-    let placeholderArray = Array.from(placeholderP.innerHTML);
-    placeholderArray = placeholderArray.map((el, i) => {
-        if (wordToGuess[i] == userLetter) {
-            return (el = userLetter);
-        } else {
-            return el;
-        }
-    });
-
-    placeholderP.innerHTML = placeholderArray.join("");
-}
-
-function gameOver(win) {
-    let winMessage = document.getElementById("statusMessage");
-    let btnWrapper = document.querySelector(".button-wrapper");
-    hideElements("hidden", btnWrapper);
-    if (win) {
-        winMessage.innerHTML = "You Win";
-        winMessage.style.color = "green";
-    } else {
-        winMessage.innerHTML = "Game Over";
-        winMessage.style.color = "rgb(239, 83, 80)";
-    }
-}
-
-function hangerDraw(num) {
-    let show = document.getElementById(`show${num}`);
-    unhideElements("hidden", show);
-}
-
-function hideLives(num) {
-    let life = document.getElementById(`life${num}`);
-    hideElements("hiddenLife", life);
-}
-
-function hideElements(myclass, ...els) {
-    for (let el of els) {
-        el.classList.add(myclass);
-    }
-}
-
-function unhideElements(myclass, ...els) {
-    for (let el of els) {
-        el.classList.remove(myclass);
-    }
-}
-
-function startNewGame() {
-    db.ref('game/hangman').once('value').then((snapshot) => {
-        const data = snapshot.val();
-        const wordsArray = data.words;
-        const categoryArray = data.categories;
-
-        let btnWrapper = document.querySelector(".button-wrapper");
-        let winMessage = document.getElementById("statusMessage");
-        let wrongLetters = document.querySelector("#wrongLetters span");
-        let warningText = document.getElementById("warningText");
-        let hiddenHangman = Array.from(document.querySelectorAll("svg .bodyPart"));
-        let hiddenLives = Array.from(document.querySelectorAll(".lives"));
-
-        for (let bodyPart of hiddenHangman) {
-            hideElements("hidden", bodyPart);
-        }
-
-        for (let life of hiddenLives) {
-            unhideElements("hiddenLife", life);
-        }
-
-        wrongLetters.innerHTML = "";
-        unhideElements("hidden", btnWrapper);
-        hideElements("hidden", wrongLetters.parentNode, warningText);
-        winMessage.innerHTML = "Vanilla JavaScript Hangman Game";
-        winMessage.style.color = "black";
-        let oldP = document.getElementById("placeholderP");
-        if (oldP.parentNode) {
-            oldP.parentNode.removeChild(oldP);
-        }
-
-        let newGame = new Hangman(wordsArray, categoryArray);
-        newGame.setupNewWord();
-    });
-}
-
-window.onload = function() {
-    startNewGame();
-};
-document.getElementById("newGame").addEventListener("click", startNewGame);
-  </script>
+  <script src="../js/hangman.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 </body>
 </html>

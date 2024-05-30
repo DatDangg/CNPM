@@ -55,7 +55,6 @@ function saveProfile() {
   const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
   const username = loggedInUser.username;
 
-  const newUsername = document.getElementById('editUsername').value;
   const newEmail = document.getElementById('editEmail').value;
 
   const currentPassword = document.getElementById('currentPassword').value;
@@ -73,10 +72,13 @@ function saveProfile() {
 
   database.ref(`Users/${username}`).once('value', (snapshot) => {
     const userData = snapshot.val();
+
+    // Check if the current password is correct
     if (userData && userData.password === currentPassword) {
       const updates = {
         email: newEmail,
       };
+
       if (newPassword) {
         updates.password = newPassword;
       }
@@ -85,9 +87,23 @@ function saveProfile() {
         Swal.fire({
           icon: 'success',
           title: 'Thành công',
-          text: 'Thông tin cá nhân đã được cập nhật!'
+          text: 'Mật khẩu đã được cập nhật!'
         }).then(() => {
-          localStorage.setItem('loggedInUser', JSON.stringify({ username: newUsername, email: newEmail }));
+          localStorage.setItem('loggedInUser', JSON.stringify({ username: username, email: newEmail }));
+          window.location.reload();
+        });
+      });
+    } else if (!newPassword) {
+      // If the password is not being changed, just update the email
+      database.ref(`Users/${username}`).update({
+        email: newEmail,
+      }).then(() => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Thành công',
+          text: 'Email đã được cập nhật!'
+        }).then(() => {
+          localStorage.setItem('loggedInUser', JSON.stringify({ username: username, email: newEmail }));
           window.location.reload();
         });
       });

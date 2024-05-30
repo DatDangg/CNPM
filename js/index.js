@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Email:', email);
     console.log('Password:', password);
             
-        firebase.database().ref('Users/').orderByChild('email').equalTo(email).once('value')
+    firebase.database().ref('Users/').orderByChild('email').equalTo(email).once('value')
     .then(function(snapshot) {
         if (snapshot.exists()) {
             const userData = snapshot.val();
