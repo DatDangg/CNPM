@@ -22,100 +22,125 @@ document.addEventListener('DOMContentLoaded', function() {
         "flipcardgame.html": "game"
     };
 
-    // Get the current path
     const currentPath = window.location.pathname.split("/").pop();
 
-    // Set the active class to the matching nav link
     if (navLinks[currentPath]) {
         document.getElementById(navLinks[currentPath]).classList.add("active");
     }
+
     const loginForm = document.getElementById('form1');
     const navUserAction = document.getElementById('nav-user-action');
     const heroSection = document.getElementById('hero');
-    
-    // Kiểm tra xem đã có thông tin đăng nhập trong Local Storage chưa
+
     const loggedInUser = localStorage.getItem('loggedInUser');
     if (loggedInUser) {
-        // Nếu có, tự động đăng nhập người dùng
-        const username = JSON.parse(loggedInUser).username;
-        updateUIForLoggedInUser(username);
+        const { username, isAdmin } = JSON.parse(loggedInUser);
+        updateUIForLoggedInUser(username, isAdmin);
     }
-    
+
     loginForm.addEventListener('submit', function(event) {
         event.preventDefault();
-        
-        const email = document.getElementById('exampleInputEmail1').value;
-    const password = document.getElementById('inputPassword1').value;
 
-    // console.log('Email:', email);
-    // console.log('Password:', password);
-            
-    firebase.database().ref('Users/').orderByChild('email').equalTo(email).once('value')
-    .then(function(snapshot) {
-        if (snapshot.exists()) {
-            const userData = snapshot.val();
-            // console.log('User data:', userData); // Thêm dòng này để kiểm tra dữ liệu
+        const loginIdentifier = document.getElementById('exampleInputEmail1').value;
+        const password = document.getElementById('inputPassword1').value;
 
-            const username = Object.keys(userData)[0];
-            const user = userData[username];
-            
-            if (user.password === password) {
-                // Đăng nhập thành công
-                const modal = bootstrap.Modal.getInstance(document.getElementById('exampleModal'));
-                modal.hide();
-                
-                // Lưu thông tin đăng nhập vào Local Storage
-                localStorage.setItem('loggedInUser', JSON.stringify({ username: username }));
-                
-                // Thực hiện các hành động sau khi đăng nhập thành công
-                updateUIForLoggedInUser(username);
+        // Check if the email is in the Users collection
+        firebase.database().ref('Users/').orderByChild('email').equalTo(loginIdentifier).once('value')
+        .then(function(snapshot) {
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                const username = Object.keys(userData)[0];
+                const user = userData[username];
+
+                if (user.password === password) {
+                    handleSuccessfulLogin(username, false);
+                } else {
+                    alert('Mật khẩu không đúng. Vui lòng thử lại.');
+                }
             } else {
-                alert('Mật khẩu không đúng. Vui lòng thử lại.');
-            }
-        } else {
-            alert('Email không tồn tại trong hệ thống. Vui lòng đăng ký trước.');
-        }
-    })
-    .catch(function(error) {
-        console.error('Lỗi khi kiểm tra email trong Firebase: ', error);
-        alert('Đã xảy ra lỗi. Vui lòng thử lại sau.');
-    });
+                // If not found in Users, check in Admin
+                firebase.database().ref('Admin/').once('value')
+                .then(function(snapshot) {
+                    if (snapshot.exists()) {
+                        const admins = snapshot.val();
+                        console.log(admins)
+                        let adminFound = false;
 
+                        for (const admin in admins) {
+                            console.log(admins[admin].email, loginIdentifier)
+                            console.log(admins[admin].password, password)
+                            if (admins[admin].email == loginIdentifier && admins[admin].password == password) {
+                                adminFound = true;
+                                handleSuccessfulLogin(admin, true); // Pass true to indicate admin
+                                break;
+                            }
+                        }
+
+                        if (!adminFound) {
+                            alert('Thông tin đăng nhập không đúng. Vui lòng thử lại.');
+                        }
+                    } else {
+                        alert('Thông tin đăng nhập không đúng. Vui lòng thử lại.');
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Lỗi khi kiểm tra Admin trong Firebase: ', error);
+                    alert('Đã xảy ra lỗi. Vui lòng thử lại sau.');
+                });
+            }
+        })
+        .catch(function(error) {
+            console.error('Lỗi khi kiểm tra email trong Firebase: ', error);
+            alert('Đã xảy ra lỗi. Vui lòng thử lại sau.');
+        });
     });
 
     const signupForm = document.getElementById('form2');
     const usernameInput = document.getElementById('InputUsername2');
+    const emailInput = document.getElementById('InputEmail2');
+    const pwInput = document.getElementById('inputCpass2');
     const errorText = document.createElement('div');
-    errorText.classList.add('small','error-message');
+    const errorTxt = document.createElement('div');
+    const errorTx = document.createElement('div');
+    errorText.classList.add('small', 'error-message');
     errorText.textContent = 'User already exists!';
-    
+    errorTxt.classList.add('small', 'error-message');
+    errorTxt.textContent = 'Email already exists!';
+    errorTx.classList.add('small', 'error-message');
+    errorTx.textContent = 'Password do not match!';
+
     signupForm.addEventListener('submit', function(event) {
         event.preventDefault();
-        
         const username = usernameInput.value;
-        const email = document.getElementById('InputEmail2').value;
+        const email = emailInput.value;
         const contact = document.getElementById('inputContact2').value;
         const password = document.getElementById('inputPassword2').value;
-        const confirmPassword = document.getElementById('inputCpass2').value;
-        
+        const confirmPassword = pwInput.value;
+
         if (password !== confirmPassword) {
-            alert('Mật khẩu không trùng khớp!');
+            pwInput.parentNode.appendChild(errorTx);
             return;
         }
-        
-        firebase.database().ref('Users/' + username).once('value')
-            .then(function(snapshot) {
-                if (snapshot.exists()) {
-                    usernameInput.parentNode.appendChild(errorText);
-                } else {
-                    const newUser = {
-                        username: username,
-                        email: email,
-                        contact: contact,
-                        password: password
-                    };
-                    
-                    firebase.database().ref('Users/' + username).set(newUser)
+
+        firebase.database().ref('Users/').orderByChild('email').equalTo(email).once('value')
+        .then(function(snapshot) {
+            if (snapshot.exists()) {
+                emailInput.parentNode.appendChild(errorTxt);
+            } else {
+                const sanitizedUsername = sanitizeUsername(username);
+                firebase.database().ref('Users/' + sanitizedUsername).once('value')
+                .then(function(snapshot) {
+                    if (snapshot.exists()) {
+                        usernameInput.parentNode.appendChild(errorText);
+                    } else {
+                        const newUser = {
+                            username: username,
+                            email: email,
+                            contact: contact,
+                            password: password
+                        };
+
+                        firebase.database().ref('Users/' + sanitizedUsername).set(newUser)
                         .then(function() {
                             alert('Đăng ký thành công!');
                             signupForm.reset();
@@ -124,15 +149,30 @@ document.addEventListener('DOMContentLoaded', function() {
                             console.error('Lỗi khi thêm người dùng vào Firebase: ', error);
                             alert('Đã xảy ra lỗi. Vui lòng thử lại sau.');
                         });
-                }
-            })
-            .catch(function(error) {
-                console.error('Lỗi khi kiểm tra username trong Firebase: ', error);
-                alert('Đã xảy ra lỗi. Vui lòng thử lại sau.');
-            });
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Lỗi khi kiểm tra username trong Firebase: ', error);
+                    alert('Đã xảy ra lỗi. Vui lòng thử lại sau.');
+                });
+            }
+        })
+        .catch(function(error) {
+            console.error('Lỗi khi kiểm tra email trong Firebase: ', error);
+            alert('Đã xảy ra lỗi. Vui lòng thử lại sau.');
+        });
     });
 
-    function updateUIForLoggedInUser(username) {
+    function handleSuccessfulLogin(username, isAdmin = false) {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('exampleModal'));
+        modal.hide();
+
+        localStorage.setItem('loggedInUser', JSON.stringify({ username: username, isAdmin: isAdmin }));
+
+        updateUIForLoggedInUser(username, isAdmin);
+    }
+
+    function updateUIForLoggedInUser(username, isAdmin = false) {
         navUserAction.innerHTML = `
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -144,18 +184,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 </ul>
             </li>
         `;
-        
+
         const logoutButton = document.getElementById('logoutButton');
         logoutButton.addEventListener('click', function() {
             localStorage.removeItem('loggedInUser');
             location.reload();
         });
-        
+
+        let welcomeMessage = `Xin chào, ${username}`;
+        if (isAdmin) {
+            welcomeMessage += ' (Admin)';
+        }
+
         heroSection.innerHTML = `
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-8 col-lg-3 offset-md-2 padding-large ps-lg-0 pe-lg-5">
-                        <h2 class="display-2 fw-semibold">Xin chào, ${username}</h2>
+                        <h2 class="display-2 fw-semibold">${welcomeMessage}</h2>
                         <p class="secondary-font my-4 pb-2">Chào mừng bạn đến với nền tảng học tập trực tuyến của chúng tôi.</p>
                     </div>
                     <div class="col-md-6 col-lg-7 d-block d-md-none d-lg-block p-0">
@@ -165,38 +210,8 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
     }
+
+    function sanitizeUsername(username) {
+        return username.replace(/[.#$/[\]]/g, ',');
+    }
 });
-(function() {
-    emailjs.init('S55P341Zxv_KDoxYg');  // Thay YOUR_PUBLIC_KEY bằng public key thực tế của bạn
-})();
-
-// Function to generate random code
-function generateRandomCode() {
-    return Math.floor(100000 + Math.random() * 900000).toString();
-}
-
-// Function to send email with EmailJS
-function sendEmail(email, code) {
-    emailjs.send("service_n57axpe", "template_c5nvl8w", {  // Thay YOUR_SERVICE_ID và YOUR_TEMPLATE_ID bằng service ID và template ID thực tế của bạn
-        to_email: email,
-        verification_code: code
-    })
-    .then(() => {
-        document.getElementById('message').textContent = "Mã xác nhận đã được gửi!";
-        document.getElementById('verifyCodeForm').style.display = 'block';
-        document.getElementById('passwordResetForm').style.display = 'none';
-    })
-    .catch((error) => {
-        document.getElementById('message').textContent = "Đã xảy ra lỗi: " + error.message;
-    });
-}
-
-// Event listener for form submission
-document.getElementById('passwordResetForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const email = document.getElementById('email').value;
-    const code = generateRandomCode();
-    sendEmail(email, code);
-    localStorage.setItem('verificationCode', code);
-});
-

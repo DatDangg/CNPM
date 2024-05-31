@@ -15,7 +15,7 @@ html, body {
 }
 
 .container {
-    margin-top: 120px;
+    margin-top: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -43,10 +43,10 @@ html, body {
 }
 
 .deck {
-    background: linear-gradient(135deg, rgba(207, 197, 229, 1) 0%, rgba(163, 154, 204, 1) 36%, rgba(79, 71, 169, 1) 100%);
+    background: #f1bd03;
     margin: 0;
-    width: 612px;
-    min-height: 500px;
+    width: 512px;
+    min-height: 480px;
     box-shadow: 10px 9px 31px 1px rgba(0, 0, 0, 0.75);
     border-radius: 10px;
     display: flex;
@@ -60,8 +60,8 @@ html, body {
 .card_match {
     transform: rotateY(0);
     transition: 0.5s;
-    width: 125px;
-    height: 125px;
+    width: 100px;
+    height: 100px;
     background: linear-gradient(to bottom, rgba(69, 72, 77, 1) 0%, rgba(0, 0, 0, 1) 100%);
     box-shadow: 5px 5px 24px -3px rgba(0, 0, 0, 0.75);
     border-radius: 8px;
@@ -83,9 +83,9 @@ html, body {
 .show_match {
     transform: rotateY(180deg);
     transition: 0.5s;
-    background: skyblue;
+    background: white;
     font-size: 20px;
-    color: white;
+    color: black;
     cursor: default;
 }
 

@@ -1,74 +1,126 @@
-
-
 const dbRef = firebase.database().ref(`Test/`);
+const adminRef = firebase.database().ref('Admin/');
+const user = JSON.parse(localStorage.getItem('loggedInUser'));
 
-const username = JSON.parse(localStorage.getItem('loggedInUser')).username; // Replace with the actual username or fetch from user context
+const username = user.username; // Replace with the actual username or fetch from user context
 
-// Get user's data
-const userRef = firebase.database().ref(`Users/${username}`);
-let userTestKeys = [];
+// Check if the user is an admin
+adminRef.once("value", function(snapshot) {
+    const admins = snapshot.val();
+    if (admins && admins[username]) {
+        displayAdminPanel();
+    } else {
+        displayUserPanel();
+    }
+});
 
-userRef.once("value", function(userSnapshot) {
-    const userData = userSnapshot.val();
-    // console.log("Retrieved user data from Firebase:", userData);
-    userTestKeys = userData.testkey ? userData.testkey.split(',').map(key => key.trim()) : [];
-    // console.log("User's test keys:", userTestKeys);
+function displayAdminPanel() {
+    document.querySelector('.testing').textContent = "ADMIN TESTING PANEL";
+    const adminContainer = document.getElementById('admin-container');
+    adminContainer.classList.remove('d-none');
 
-    // Get tests data
     dbRef.once("value", function(snapshot) {
         const tests = snapshot.val();
-        // console.log("Retrieved tests from Firebase:", tests);
-        const frame = document.createElement("div");
-        frame.className = "frame";
-        let frame2 = document.createElement("div");
-        frame2.className = "frame-2";
+        const adminTableBody = document.getElementById('admin-table-body');
 
-        // Filter tests with keys starting with "Test"
-        const filteredTests = Object.keys(tests).filter(key => key.startsWith("Test"));
-        // console.log("Filtered tests:", filteredTests);
+        Object.keys(tests).forEach(testKey => {
+            if (testKey.startsWith("Test")) {
+                const test = tests[testKey];
+                const row = document.createElement('tr');
+                const testCell = document.createElement('td');
+                testCell.textContent = testKey;
+                const hiddenCell = document.createElement('td');
+                const hiddenCheckbox = document.createElement('input');
+                hiddenCheckbox.type = 'checkbox';
+                hiddenCheckbox.checked = test.hide === 1;
+                hiddenCell.appendChild(hiddenCheckbox);
+                const lockedCell = document.createElement('td');
+                const lockedCheckbox = document.createElement('input');
+                lockedCheckbox.type = 'checkbox';
+                lockedCheckbox.checked = !!test.key;
+                lockedCell.appendChild(lockedCheckbox);
+                
+                row.appendChild(testCell);
+                row.appendChild(hiddenCell);
+                row.appendChild(lockedCell);
+                adminTableBody.appendChild(row);
 
-        for (let i = 0; i < filteredTests.length; i++) {
-            const testKey = filteredTests[i];
-            const testData = tests[testKey];
-            // console.log(`Processing ${testKey}:`, testData);
+                hiddenCheckbox.addEventListener('change', function() {
+                    updateTestVisibility(testKey, hiddenCheckbox.checked);
+                });
 
-            const key = i + 1;
-            const frame3 = document.createElement("div");
-            frame3.className = "frame-3";
-            frame3.setAttribute("data-test-number", i + 1);
-            frame3.setAttribute("data-test-key", testData.key ? testData.key : "");
-            frame3.addEventListener("click", function () {
-                // console.log(`Clicked on test ${key}, key:`, testData.key);
-                openTestPage(key, testData.key, userTestKeys, userRef);
-            });
-            const rectangleImg = document.createElement("img");
-            rectangleImg.className = "rectangle";
-            rectangleImg.src = "../images/rectangle-38-2.png";
-            const textWrapper2 = document.createElement("div");
-            textWrapper2.className = "text-wrapper-2";
-            textWrapper2.textContent = testKey;
-            const divWrapper = document.createElement("div");
-            frame3.appendChild(rectangleImg);
-            frame3.appendChild(textWrapper2);
-            frame3.appendChild(divWrapper);
-            frame2.appendChild(frame3);
-
-            if ((i + 1) % 3 === 0 || i === filteredTests.length - 1) {
-                frame.appendChild(frame2);
-                document.querySelector(".frame").appendChild(frame);
-                frame2 = document.createElement("div");
-                frame2.className = "frame-2";
+                lockedCheckbox.addEventListener('change', function() {
+                    updateTestLockStatus(testKey, lockedCheckbox.checked);
+                });
             }
-        }
+        });
     });
-});
+}
+
+function displayUserPanel() {
+    const userRef = firebase.database().ref(`Users/${username}`);
+    let userTestKeys = [];
+
+    userRef.once("value", function(userSnapshot) {
+        const userData = userSnapshot.val();
+        userTestKeys = userData.testkey ? userData.testkey.split(',').map(key => key.trim()) : [];
+
+        dbRef.once("value", function(snapshot) {
+            const tests = snapshot.val();
+            const frame = document.createElement("div");
+            frame.className = "frame";
+            let frame2 = document.createElement("div");
+            frame2.className = "frame-2";
+
+            const filteredTests = Object.keys(tests).filter(key => key.startsWith("Test") && tests[key].hide === 0);
+
+            for (let i = 0; i < filteredTests.length; i++) {
+                const testKey = filteredTests[i];
+                const testData = tests[testKey];
+
+                const key = i + 1;
+                const frame3 = document.createElement("div");
+                frame3.className = "frame-3";
+                frame3.setAttribute("data-test-number", i + 1);
+                frame3.setAttribute("data-test-key", testData.key ? testData.key : "");
+                frame3.addEventListener("click", function () {
+                    openTestPage(key, testData.key, userTestKeys, userRef);
+                });
+                const rectangleImg = document.createElement("img");
+                rectangleImg.className = "rectangle";
+                rectangleImg.src = "../images/rectangle-38-2.png";
+                const textWrapper2 = document.createElement("div");
+                textWrapper2.className = "text-wrapper-2";
+                textWrapper2.textContent = testKey;
+                const divWrapper = document.createElement("div");
+                frame3.appendChild(rectangleImg);
+                frame3.appendChild(textWrapper2);
+                frame3.appendChild(divWrapper);
+                frame2.appendChild(frame3);
+
+                if ((i + 1) % 3 === 0 || i === filteredTests.length - 1) {
+                    frame.appendChild(frame2);
+                    document.querySelector(".frame").appendChild(frame);
+                    frame2 = document.createElement("div");
+                    frame2.className = "frame-2";
+                }
+            }
+        });
+    });
+}
+
+function updateTestVisibility(testKey, isHidden) {
+    dbRef.child(testKey).update({ hide: isHidden ? 1 : 0 });
+}
+
+function updateTestLockStatus(testKey, isLocked) {
+    dbRef.child(testKey).update({ key: isLocked ? testKey : "" });
+}
 
 function openTestPage(testKey, testKeyValue, userTestKeys, userRef) {
     if (testKeyValue && !userTestKeys.includes(testKeyValue)) {
-        // console.log("Showing payment modal for test:", testKey);
         showPaymentModal(testKeyValue, userRef);
     } else {
-        // console.log("Navigating to test page for test:", testKey);
         window.location.href = `test.html?test=${testKey}`;
     }
 }
@@ -82,61 +134,23 @@ function showPaymentModal(testKeyValue, userRef) {
 
     closeBtn.onclick = function () {
         modal.style.display = "none";
-    }
+    };
 
+    checkPaymentBtn.onclick = function () {
+        Swal.fire({
+            title: 'Payment Successful!',
+            text: 'Access has been granted.',
+            icon: 'success'
+        });
+        modal.style.display = "none";
+        userRef.update({
+            testkey: firebase.database.ServerValue.arrayUnion(testKeyValue)
+        });
+    };
+    
     window.onclick = function (event) {
         if (event.target === modal) {
             modal.style.display = "none";
         }
-    }
-
-    checkPaymentBtn.onclick = function () {
-        checkPayment(testKeyValue, userRef);
-    }
-}
-
-function checkPayment(testKeyValue, userRef) {
-    fetch('https://dangkyhoctlu.000webhostapp.com/test.php')
-        .then(response => response.json())
-        .then(data => {
-            // console.log("Payment data:", data);
-            if (data.success) {
-                const transaction = data.transactions.find(transaction => transaction.account_number === '4220112003' && parseFloat(transaction.amount_in) >= 50000);
-                if (transaction) {
-                    swal.fire({
-                        title: 'Payment Successful',
-                        text: 'You can now access the test.',
-                        icon: 'success'
-                    }).then(() => {
-                        // Update user's test keys
-                        userTestKeys.push(testKeyValue);
-                        const updatedTestKeys = userTestKeys.join(', ');
-                        // console.log(testKeyValue.slice(4))
-                        userRef.update({ testkey: updatedTestKeys }).then(() => {
-                            window.location.href = `test.html?test=${testKeyValue.slice(4)}`;
-                        });
-                    });
-                } else {
-                    swal.fire({
-                        title: 'Payment Not Found',
-                        text: 'Please make sure the payment was successful.',
-                        icon: 'error'
-                    });
-                }
-            } else {
-                swal.fire({
-                    title: 'Payment Check Failed',
-                    text: 'Unable to verify payment. Please try again later.',
-                    icon: 'error'
-                });
-            }
-        })
-        .catch(error => {
-            console.error("Error fetching payment data:", error);
-            swal.fire({
-                title: 'Error',
-                text: 'Unable to check payment. Please try again later.',
-                icon: 'error'
-            });
-        });
+    };
 }

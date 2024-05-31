@@ -44,12 +44,8 @@ main {
 }
 
 #statusMessage {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  padding: 10px;
   box-sizing: border-box;
   text-align: center;
-  height: 94px;
 }
 
 svg {
@@ -100,7 +96,7 @@ svg {
 }
 
 #guessWrapper p {
-  font-size: 40px;
+  font-size: 20px;
   display: inline-block;
   letter-spacing: 15px;
   margin-bottom: 20px;
@@ -113,11 +109,11 @@ svg {
 }
 
 .inside-wrapper:first-child {
-  width: 250px;
+  width: 150px;
 }
 
 .inside-wrapper:last-child {
-  width: 400px;
+  width: 300px;
   padding-right: 20px;
   box-sizing: border-box;
   text-align: right;

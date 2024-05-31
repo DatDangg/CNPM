@@ -41,7 +41,7 @@
   }
   .profile-page .content__cover {
     position: relative;
-    background: linear-gradient(150deg, #1d8cf8 20%, #3358f4 100%);
+    background: linear-gradient(150deg, #eaf81d 20%, #3358f4 100%);
   }
   .theme-orange .profile-page .content__cover {
     background: linear-gradient(150deg, #ff4086 20%, #fd8d76 100%);
@@ -663,5 +663,3 @@
   .profile-page .content{
     margin-top: 150px;
   }
-
-  

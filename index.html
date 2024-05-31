@@ -90,8 +90,8 @@
                               <form id="form1" class="form-group flex-wrap p-3 ">
                                 <div class="form-input col-lg-12 my-4">
                                   <label for="exampleInputEmail1"
-                                    class="form-label fs-6 text-uppercase fw-bold text-black">Email Address</label>
-                                  <input type="text" id="exampleInputEmail1" name="email" placeholder="Email"
+                                    class="form-label fs-6 text-uppercase fw-bold text-black">Email/Username</label>
+                                  <input type="text" id="exampleInputEmail1" name="email" placeholder="Email/Username"
                                     class="form-control ps-3">
                                 </div>
                                 <div class="form-input col-lg-12 my-4">
@@ -208,16 +208,8 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-8 col-lg-3 offset-md-2 padding-large ps-lg-0 pe-lg-5">
-          <h2 class="display-2 fw-semibold">Great Online Platform</h2>
-          <p class="secondary-font my-4 pb-2">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis fugit at quia tenetur expedita, consequuntur aspernatur explicabo earum odio.</p>
-          <div>
-            <form id="course-search-form" class="d-flex justify-content-between position-relative">
-              <input type="text" name="email" placeholder="Search Your Courses ..." class="form-control w-100">
-              <button class="btn btn-primary px-4 py-2 position-absolute end-0" style="height: -webkit-fill-available;">
-                <iconify-icon icon="ion:search" class="fs-4 py-1" style="vertical-align: middle;"></iconify-icon>
-              </button>
-            </form>
-          </div>
+          <h2 class="display-2 fw-semibold">Learn & Improve</h2>
+          <p class="secondary-font my-4 pb-2">Chào mừng bạn đến với nền tảng học tập trực tuyến của chúng tôi.</p>
         </div>
         <div class="col-md-6 col-lg-7 d-block d-md-none d-lg-block p-0">
           <img src="images/billboard-img.jpg" alt="img" class="img-fluid">
@@ -234,76 +226,7 @@
   <script src="js/plugins.js"></script>
   <script src="js/script.js"></script>
   <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-  <script>
-    (function() {
-      emailjs.init("S55P341Zxv_KDoxYg");
-    })();
-    var resetCode; // To store the reset code
-    var email; // To store the email
-
-    document.getElementById('forgotPasswordForm').addEventListener('submit', function(event) {
-      event.preventDefault();
-      email = document.getElementById('forgotPasswordEmail').value;
-      resetCode = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit random number
-
-      var templateParams = {
-        to_email: email,
-        verification_code: resetCode
-      };
-
-      emailjs.send('service_n57axpe', 'template_c5nvl8w', templateParams)
-        .then(function(response) {
-          alert('Reset code sent successfully to ' + email);
-          document.getElementById('forgotPasswordStep1').classList.add('d-none');
-          document.getElementById('forgotPasswordStep2').classList.remove('d-none');
-        }, function(error) {
-          console.error('FAILED...', error);
-          alert('Failed to send reset code. Please try again later.');
-        });
-    });
-
-    document.getElementById('verifyResetCodeForm').addEventListener('submit', function(event) {
-      event.preventDefault();
-
-      var enteredCode = document.getElementById('resetCodeInput').value;
-      var newPassword = document.getElementById('newPasswordInput').value;
-      var confirmNewPassword = document.getElementById('confirmNewPasswordInput').value;
-
-      if (enteredCode == resetCode) {
-        if (newPassword === confirmNewPassword) {
-          var database = firebase.database();
-          var usersRef = database.ref('Users');
-          
-          // Find user by email and update the password
-          usersRef.orderByChild('email').equalTo(email).once('value', function(snapshot) {
-            if (snapshot.exists()) {
-              var userData = snapshot.val();
-              var userKey = Object.keys(userData)[0]; // Get the key of the user
-              usersRef.child(userKey).update({
-                password: newPassword
-              }).then(function() {
-                alert('Password updated successfully.');
-                // Hide modal
-                $('#forgotPasswordModal').modal('hide');
-              }).catch(function(error) {
-                console.error('Error updating password:', error);
-                alert('Failed to update password. Please try again later.');
-              });
-            } else {
-              alert('User not found.');
-            }
-          });
-        } else {
-          alert('Passwords do not match.');
-        }
-      } else {
-        alert('Invalid reset code.');
-      }
-    });
-  </script>
-  <!-- <script>
-    localStorage.removeItem("loggedInUser");
-  </script> -->
+  <script src="./js/forgot.js"></script>
 </body>
 
 </html>

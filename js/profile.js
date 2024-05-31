@@ -11,7 +11,7 @@ function updateProfile() {
     const userData = snapshot.val();
 
     if (userData) {
-      let testDescriptions = '<table><tr><th>Test</th><th>Sub Test</th><th>Score</th><th>View</th></tr>';
+      testDescriptions = '<table class = "table"><thead><tr><th>Test</th><th>Test Times</th><th>Score</th><th>View</th></tr></thead>';
 
       for (const testKey in userData) {
         if (testKey.startsWith('Test')) {
@@ -24,7 +24,7 @@ function updateProfile() {
             const score = subTest.score;
             const viewLink = `../etest/results.html?test=${testKey.slice(4)}&username=${username}&attemptNumber=${subTestKey.slice(6)}`;
 
-            testDescriptions += `<tr><td>${testName}</td><td>${subTestName}</td><td>${score}</td><td><a href="${viewLink}">View</a></td></tr>`;
+            testDescriptions += `<tr><th scope="row">${testName}</th><td>${subTestName.slice(6)}</td><td>${score}</td><td><a href="${viewLink}">👀</a></td></tr>`;
           }
         }
       }
