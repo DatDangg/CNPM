@@ -9,8 +9,10 @@ adminRef.once("value", function(snapshot) {
     const admins = snapshot.val();
     if (admins && admins[username]) {
         displayAdminPanel();
+        
     } else {
         displayUserPanel();
+        
     }
 });
 

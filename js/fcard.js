@@ -28,7 +28,7 @@ const getData = async () => {
       Object.keys(topic).forEach((wordKey, index) => {
         let meaning = topic[wordKey];
         if (typeof meaning !== 'string') {
-          console.error(`Expected string but got ${typeof meaning} for word ${wordKey}`);
+          // console.error(`Expected string but got ${typeof meaning} for word ${wordKey}`);
           meaning = String(meaning); // Convert to string if necessary
         }
         meaning = meaning.replace(/%/g, '<br>');  // Replace % with <br>
@@ -74,14 +74,15 @@ const action = (value) => {
   const containerSlide = document.querySelector(".container-slide");
   // console.log("containerCard", containerSlide.scrollLeft);
   const maxScrollLeft = containerSlide.scrollWidth - containerSlide.clientWidth;
+  console.log(maxScrollLeft)
   if (value === "next" && containerSlide.scrollLeft < maxScrollLeft) {
-    containerSlide.scrollLeft += 316;
+    containerSlide.scrollLeft += 816;
     idActive++;
     resetAndAddNewActive(idActive);
   }
 
   if (value === "prev" && containerSlide.scrollLeft > 0) {
-    containerSlide.scrollLeft -= 316;
+    containerSlide.scrollLeft -= 816;
     idActive--;
     resetAndAddNewActive(idActive);
   }

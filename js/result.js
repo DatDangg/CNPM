@@ -18,6 +18,7 @@ const testRef = database.ref(`Test/Test${testNumber}/`);
 Promise.all([userTestRef.once("value"), testRef.once("value")])
   .then(([userSnapshot, testSnapshot]) => {
     const userData = userSnapshot.val();
+    
     const testData = testSnapshot.val();
     let score = 0;
     let totalQuestions = 0;
@@ -26,7 +27,6 @@ Promise.all([userTestRef.once("value"), testRef.once("value")])
     let htmlContent = "";
     let summaryContent = "";
     for (const questionNumber in testData) {
-      if (questionNumber === 'key') continue; // Bỏ qua phần key
       const question = testData[questionNumber];
       if (!question) continue;
 
@@ -71,8 +71,8 @@ Promise.all([userTestRef.once("value"), testRef.once("value")])
             .join("<br>")
         : "";
 
-      htmlContent += `
-        <div class="question">
+        htmlContent += `
+        <div class="question" id="question-${questionNumber}">
           <p class="question-number">Question ${questionNumber}</p>
           ${questionImage}
           ${questionText}
@@ -97,11 +97,10 @@ Promise.all([userTestRef.once("value"), testRef.once("value")])
       `;
 
       summaryContent += `
-        <div class="question-summary ${isCorrect ? "correct" : "incorrect"}" id="question-${questionNumber}" onclick="scrollToQuestion(${questionNumber})">
+        <div class="question-summary ${isCorrect ? "correct" : "incorrect"}" onclick="scrollToQuestion(${questionNumber})">
           ${questionNumber}
         </div>
       `;
-
     }
 
     document.getElementById("results").innerHTML = htmlContent;
@@ -137,9 +136,13 @@ function toggleVisibility(id) {
   }
 }
 function scrollToQuestion(questionNumber) {
-  const questionElement = document.getElementById(`question-${questionNumber}`);
-  console.log(questionElement)
-  if (questionElement) {
-    questionElement.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
+  const element = document.getElementById(`question-${questionNumber}`);
+  const headerOffset = 100;
+  const elementPosition = element.getBoundingClientRect().top;
+  const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+  window.scrollTo({
+    top: offsetPosition,
+    behavior: "smooth"
+  });
 }

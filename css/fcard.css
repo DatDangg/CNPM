@@ -1,65 +1,75 @@
 
-body {
-    font-family: sans-serif;
-  }
+.container-main {
+  margin-top: 120px;
+  display: flex;
+  flex-direction: column; /* Đảm bảo container chứa các card nằm theo chiều dọc */
+  align-items: center; /* Canh giữa các phần tử con */
+}
+.container-feature {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  min-width: 400px; /* Tăng kích thước tối thiểu */
+  max-width: 400px; /* Tăng kích thước tối đa */
+}
 
-  .container-feature {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 16px;
-  }
 
-  .container {
-    display: flex;
-    justify-content: center;
-    margin-top: 120px;
-  }
+.container-card {
+  background-color: transparent;
+  min-width: 800px; /* Tăng kích thước tối thiểu */
+  max-width: 800px; /* Tăng kích thước tối đa */
+  height: 500px; /* Cũng có thể tăng kích thước chiều cao tùy thích */
+  perspective: 1000px;
+  border-radius: 15px;
+}
 
-  .container-card {
-    background-color: transparent;
-    min-width: 300px;
-    max-width: 300px;
-    height: 300px;
-    perspective: 1000px;
-  }
+.container-slide {
+  display: flex;
+  column-gap: 16px;
+  width: 800px; /* Cập nhật kích thước slide để phù hợp với container card */
+  overflow: hidden;
+}
 
-  .container-slide {
-    display: flex;
-    column-gap: 16px;
-    width: 300px;
-    overflow: hidden;
-  }
 
-  .container-card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    transition: transform 0.6s;
-    transform-style: preserve-3d;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  }
+.container-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+}
 
-  .container-card.flip .container-card-inner {
-    transform: rotateY(180deg);
-  }
+.container-card.flip .container-card-inner {
+  transform: rotateY(180deg);
+}
 
-  .container-card-front,
-  .container-card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-  }
+.container-card-front,
+.container-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  font-size: 1.2rem; /* Chỉnh kích thước chữ nhỏ hơn */
+  padding: 20px;
+  box-sizing: border-box;
+}
 
-  .container-card-front {
-    background-color: #bbb;
-    color: black;
-  }
+.container-card-front {
+  background-color: #bbb;
+  color: black;
+}
 
-  .container-card-back {
-    background-color: #2980b9;
-    color: white;
-    transform: rotateY(180deg);
-  }
+.container-card-back {
+  background-color: #2980b9;
+  color: white;
+  transform: rotateY(180deg);
+}
+

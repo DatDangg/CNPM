@@ -13,7 +13,9 @@ startGameButton.addEventListener('click', () => {
 const db = firebase.database();
 
 const adminRef = firebase.database().ref('Admin/');
-const user = JSON.parse(localStorage.getItem('loggedInUser'));
+const user = JSON.parse(localStorage.getItem('loggedInUser'));  
+
+if (!user) {document.querySelector('#game-container').classList.add('d-none');}
 
 const username = user.username; // Replace with the actual username or fetch from user context
 

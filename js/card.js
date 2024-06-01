@@ -3,7 +3,7 @@ const database = firebase.database();
 
 const adminRef = firebase.database().ref('Admin/');
 const user = JSON.parse(localStorage.getItem('loggedInUser'));
-
+if (!user) {document.querySelector('.container').classList.add('d-none');}
 const username = user.username; // Replace with the actual username or fetch from user context
 
 // Check if the user is an admin
