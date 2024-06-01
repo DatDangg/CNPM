@@ -202,76 +202,118 @@
   </div>
   </header>
   <div class="container">
-    <div class="outside-wrapper">
-      <h1 id="statusMessage"></h1>
+    <div id="admin-container" class="d-none">
+      <h1>Admin Panel</h1>
       <div class="level-selection">
-        <label for="level">Chọn mức độ: </label>
-        <select id="level">
-            <option value="A1">A1</option>
-            <option value="A2">A2</option>
-            <option value="B1">B1</option>
-            <option value="B2">B2</option>
-            <option value="C1">C1</option>
-            <option value="C2">C2</option>
-
+        <label for="adminLevel">Select Level: </label>
+        <select id="adminLevel">
+          <option value="A1">A1</option>
+          <option value="A2">A2</option>
+          <option value="B1">B1</option>
+          <option value="B2">B2</option>
+          <option value="C1">C1</option>
+          <option value="C2">C2</option>
         </select>
-        <button class="start-game">Bắt đầu trò chơi</button>
-    </div>
-    </div>
-
-    <div class="outside-wrapper">
-
-      <div class="inside-wrapper">
-
-        <svg version="1.1" id="hangknuckles" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 169.28 205" enable-background="new 0 0 169.28 205" xml:space="preserve">
-                    <g id="hanger">
-                        <line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="170.259" y1="203.446" x2="0.781" y2="203.001" />
-                        <line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="38.779" y1="2" x2="39.279" y2="202" />
-                        <line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="139.78" y1="4" x2="34.78" y2="2" />
-                        <line fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" x1="138.78" y1="4" x2="135.78" y2="49" />
-                        <line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="77.323" y1="2.51" x2="39.791" y2="28.042" />
-                    </g>
-                    <line id="show0" class="bodyPart hidden" fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="136.78" y1="119" x2="148.78" y2="152" />
-                    <line id="show1" class="bodyPart hidden" fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="137.78" y1="119" x2="114.78" y2="157" />
-                    <line id="show2" class="bodyPart hidden" fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="136.78" y1="108" x2="99.28" y2="100.5" />
-                    <line id="show3" class="bodyPart hidden" fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="136.78" y1="107" x2="166.28" y2="94.5" />
-                    <line id="show4" class="bodyPart hidden" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="137.78" y1="82" x2="136.78" y2="120.5" />
-                    <image overflow="visible" id="show5" class="bodyPart hidden" width="96" height="96" xlink:href="https://res.cloudinary.com/dshmwg7vw/image/upload/v1550434128/icons8-ugandan-knuckles-96.png" transform="matrix(0.5426 0 0 0.516 110.2271 42.9535)">
-                    </image>
-
-                </svg>
-
+        <button id="loadLevelData">Load Data</button>
       </div>
-      <div class="inside-wrapper">
-        <div>
-          <img id="life5" class="lives" src="https://res.cloudinary.com/dshmwg7vw/image/upload/v1550434128/icons8-ugandan-knuckles-96.png" alt="">
-          <img id="life4" class="lives" src="https://res.cloudinary.com/dshmwg7vw/image/upload/v1550434128/icons8-ugandan-knuckles-96.png" alt="">
-          <img id="life3" class="lives" src="https://res.cloudinary.com/dshmwg7vw/image/upload/v1550434128/icons8-ugandan-knuckles-96.png" alt="">
-          <img id="life2" class="lives" src="https://res.cloudinary.com/dshmwg7vw/image/upload/v1550434128/icons8-ugandan-knuckles-96.png" alt="">
-          <img id="life1" class="lives" src="https://res.cloudinary.com/dshmwg7vw/image/upload/v1550434128/icons8-ugandan-knuckles-96.png" alt="">
-          <img id="life0" class="lives" src="https://res.cloudinary.com/dshmwg7vw/image/upload/v1550434128/icons8-ugandan-knuckles-96.png" alt="">
+      <table id="adminTable" class="table table-striped">
+        <thead>
+          <tr>
+            <th>Level</th>
+            <th>Category</th>
+            <th>Word</th>
+            <th>Remove</th>
+          </tr>
+        </thead>
+        <tbody id="adminTableBody">
+        </tbody>
+      </table>
+      <div>
+        <h3>Add New Category and Word</h3>
+        <form id="addForm" onsubmit="addNewCategoryWord(event)">
+          <div>
+            <label for="newCategory">Category:</label>
+            <input type="text" id="newCategory" required>
+          </div>
+          <div>
+            <label for="newWords">Words:</label>
+            <input type="text" id="newWords" required>
+          </div>
+          <button type="submit">Add</button>
+        </form>
+      </div>
+    </div>
+    <div id="game-container" class="d-none">
+      <div class="outside-wrapper">
+        <h1 id="statusMessage"></h1>
+        <div class="level-selection">
+          <label for="level">Chọn mức độ: </label>
+          <select id="level">
+              <option value="A1">A1</option>
+              <option value="A2">A2</option>
+              <option value="B1">B1</option>
+              <option value="B2">B2</option>
+              <option value="C1">C1</option>
+              <option value="C2">C2</option>
+
+          </select>
+          <button class="start-game">Bắt đầu trò chơi</button>
+      </div>
+      </div>
+      <div class="outside-wrapper">
+
+        <div class="inside-wrapper">
+
+          <svg version="1.1" id="hangknuckles" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 169.28 205" enable-background="new 0 0 169.28 205" xml:space="preserve">
+                      <g id="hanger">
+                          <line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="170.259" y1="203.446" x2="0.781" y2="203.001" />
+                          <line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="38.779" y1="2" x2="39.279" y2="202" />
+                          <line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="139.78" y1="4" x2="34.78" y2="2" />
+                          <line fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" x1="138.78" y1="4" x2="135.78" y2="49" />
+                          <line fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="77.323" y1="2.51" x2="39.791" y2="28.042" />
+                      </g>
+                      <line id="show0" class="bodyPart hidden" fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="136.78" y1="119" x2="148.78" y2="152" />
+                      <line id="show1" class="bodyPart hidden" fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="137.78" y1="119" x2="114.78" y2="157" />
+                      <line id="show2" class="bodyPart hidden" fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="136.78" y1="108" x2="99.28" y2="100.5" />
+                      <line id="show3" class="bodyPart hidden" fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="136.78" y1="107" x2="166.28" y2="94.5" />
+                      <line id="show4" class="bodyPart hidden" stroke="#000000" stroke-width="4" stroke-miterlimit="10" x1="137.78" y1="82" x2="136.78" y2="120.5" />
+                      <image overflow="visible" id="show5" class="bodyPart hidden" width="96" height="96" xlink:href="https://res.cloudinary.com/dshmwg7vw/image/upload/v1550434128/icons8-ugandan-knuckles-96.png" transform="matrix(0.5426 0 0 0.516 110.2271 42.9535)">
+                      </image>
+
+                  </svg>
+
         </div>
-        <div>
-          <p id="wrongLetters" class="hidden">Wrong letters:<br> <span></span></p>
+        <div class="inside-wrapper">
+          <div>
+            <img id="life5" class="lives" src="https://res.cloudinary.com/dshmwg7vw/image/upload/v1550434128/icons8-ugandan-knuckles-96.png" alt="">
+            <img id="life4" class="lives" src="https://res.cloudinary.com/dshmwg7vw/image/upload/v1550434128/icons8-ugandan-knuckles-96.png" alt="">
+            <img id="life3" class="lives" src="https://res.cloudinary.com/dshmwg7vw/image/upload/v1550434128/icons8-ugandan-knuckles-96.png" alt="">
+            <img id="life2" class="lives" src="https://res.cloudinary.com/dshmwg7vw/image/upload/v1550434128/icons8-ugandan-knuckles-96.png" alt="">
+            <img id="life1" class="lives" src="https://res.cloudinary.com/dshmwg7vw/image/upload/v1550434128/icons8-ugandan-knuckles-96.png" alt="">
+            <img id="life0" class="lives" src="https://res.cloudinary.com/dshmwg7vw/image/upload/v1550434128/icons8-ugandan-knuckles-96.png" alt="">
+          </div>
+          <div>
+            <p id="wrongLetters" class="hidden">Wrong letters:<br> <span></span></p>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="outside-wrapper">
-      <div class="wrapper">
-        <p id="categoryName">Category</p>
-        <div id="guessWrapper">
+      <div class="outside-wrapper">
+        <div class="wrapper">
+          <p id="categoryName">Category</p>
+          <div id="guessWrapper">
+          </div>
+        </div>
+        <div class="button-wrapper">
+          <input type="text" id="userLetter" maxlength="1" size="4" autocomplete="off">
+          <button type="button" id="guessButton">Guess</button>
+        </div>
+        <div class="wrapper warning">
+          <span id="warningText" class="hidden"> </span>
         </div>
       </div>
-      <div class="button-wrapper">
-        <input type="text" id="userLetter" maxlength="1" size="4" autocomplete="off">
-        <button type="button" id="guessButton">Guess</button>
+      <div class="outside-wrapper">
+        <button type="button" id="newGame">New Game</button>
       </div>
-      <div class="wrapper warning">
-        <span id="warningText" class="hidden"> </span>
-      </div>
-    </div>
-    <div class="outside-wrapper">
-      <button type="button" id="newGame">New Game</button>
     </div>
   </div>
   <script src="../js/hangman.js"></script>

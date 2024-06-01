@@ -17,27 +17,37 @@ const database = firebase.database();
 
 const getData = async () => {
   try {
-    const path = localStorage.getItem('selectedFlashcardPath');
+    const path = 'nw';
     const snapshot = await database.ref(path).once('value');
     const data = snapshot.val();
-    // console.log("data", data);
-    
-    const listContent = Object.keys(data).map((key, index) => {
-      const item = data[key];
-      const frontText = item.tuloai ? `${key} (${item.tuloai})` : key;
-      const phienamText = item.phienam ? `<p>${item.phienam}</p>` : '';
 
-      return `<div class="container-card ${index === idActive ? "active" : ""}" data-id="${key}">
-                <div class="container-card-inner" onclick="flipCard(this)">
-                  <div class="container-card-front">
-                    <h1>${frontText}</h1>
-                    ${phienamText}
-                  </div>
-                  <div class="container-card-back">
-                    <h1>${item.nghia}</h1>
-                  </div>
-                </div>
-              </div>`;
+    let listContent = [];
+
+    Object.keys(data).forEach(topicKey => {
+      const topic = data[topicKey];
+      Object.keys(topic).forEach((wordKey, index) => {
+        let meaning = topic[wordKey];
+        if (typeof meaning !== 'string') {
+          console.error(`Expected string but got ${typeof meaning} for word ${wordKey}`);
+          meaning = String(meaning); // Convert to string if necessary
+        }
+        meaning = meaning.replace(/%/g, '<br>');  // Replace % with <br>
+        
+        const frontText = wordKey;
+        const phienamText = '';
+
+        listContent.push(`<div class="container-card ${index === idActive ? "active" : ""}" data-id="${wordKey}">
+                            <div class="container-card-inner" onclick="flipCard(this)">
+                              <div class="container-card-front">
+                                <h1>${frontText}</h1>
+                                ${phienamText}
+                              </div>
+                              <div class="container-card-back">
+                                <h1>${meaning}</h1>
+                              </div>
+                            </div>
+                          </div>`);
+      });
     });
 
     document.querySelector(".container-slide").innerHTML = listContent.join(" ");
@@ -86,4 +96,3 @@ const action = (value) => {
 };
 
 getData();
-

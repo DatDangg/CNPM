@@ -12,6 +12,22 @@ startGameButton.addEventListener('click', () => {
 // Get a reference to the database service
 const db = firebase.database();
 
+const adminRef = firebase.database().ref('Admin/');
+const user = JSON.parse(localStorage.getItem('loggedInUser'));
+
+const username = user.username; // Replace with the actual username or fetch from user context
+
+// Check if the user is an admin
+adminRef.once("value", function(snapshot) {
+    const admins = snapshot.val();
+    if (admins && admins[username]) {
+        document.querySelector('#admin-container').classList.remove('d-none');
+    } else {
+        document.querySelector('#game-container').classList.remove('d-none');
+    }
+});
+
+
 function startNewGame() {
     db.ref(`game/hangman/${level}`).once('value').then((snapshot) => {
         const data = snapshot.val();
@@ -179,3 +195,86 @@ function unhideElements(myclass, ...els) {
 }
 
 document.getElementById("newGame").addEventListener("click", startNewGame);
+
+document.getElementById("loadLevelData").addEventListener("click", loadLevelData);
+
+function loadLevelData() {
+    const selectedLevel = document.getElementById("adminLevel").value;
+    const tableBody = document.getElementById("adminTableBody");
+    tableBody.innerHTML = ''; // Clear existing table rows
+
+    db.ref(`game/hangman/${selectedLevel}`).once('value').then((snapshot) => {
+        const data = snapshot.val();
+        const wordsArray = data.words || [];
+        const categoryArray = data.categories || [];
+
+        const indices = Object.keys(categoryArray); // Get the indices
+
+        indices.forEach(index => {
+            const row = document.createElement("tr");
+
+            const levelCell = document.createElement("td");
+            levelCell.textContent = selectedLevel;
+            row.appendChild(levelCell);
+
+            const categoryCell = document.createElement("td");
+            categoryCell.textContent = categoryArray[index];
+            row.appendChild(categoryCell);
+
+            const wordCell = document.createElement("td");
+            wordCell.textContent = wordsArray[index].join('');
+            row.appendChild(wordCell);
+
+            const removeCell = document.createElement("td");
+            const removeButton = document.createElement("button");
+            removeButton.textContent = "Remove";
+            removeButton.addEventListener("click", () => {
+                removeWord(selectedLevel, index);
+            });
+            removeCell.appendChild(removeButton);
+            row.appendChild(removeCell);
+
+            tableBody.appendChild(row);
+        });
+    });
+}
+
+function addNewCategoryWord(event) {
+    event.preventDefault();
+
+    const selectedLevel = document.getElementById("adminLevel").value;
+    const newCategory = document.getElementById("newCategory").value;
+    const newWords = document.getElementById("newWords").value;
+
+    // Split newWords by comma and format them for Firebase
+    const formattedWords = newWords.split(',').map(word => word.trim().toUpperCase());
+
+    db.ref(`game/hangman/${selectedLevel}/categories`).once('value').then((snapshot) => {
+        const categories = snapshot.val() || [];
+        const words = formattedWords;
+
+        // Add new category and word to the arrays
+        categories.push(newCategory);
+        db.ref(`game/hangman/${selectedLevel}/categories`).set(categories);
+
+        // Retrieve the current words array and update it
+        db.ref(`game/hangman/${selectedLevel}/words`).once('value').then((snapshot) => {
+            const currentWords = snapshot.val() || [];
+            currentWords.push(words);
+
+            db.ref(`game/hangman/${selectedLevel}/words`).set(currentWords).then(() => {
+                alert('Category added successfully');
+                loadLevelData(); // Refresh the table
+                document.getElementById("addForm").reset(); // Reset the form
+            });
+        });
+    });
+}
+
+function removeWord(level, index) {
+    db.ref(`game/hangman/${level}/words/${index}`).remove().then(() => {
+        db.ref(`game/hangman/${level}/categories/${index}`).remove().then(() => {
+            loadLevelData(); // Refresh the table
+        });
+    });
+}
