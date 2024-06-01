@@ -238,6 +238,57 @@
           </div>
       </div>
   </div>
+  <div id="admin-section" class="d-none">
+    <h2>Manage Card Data</h2>
+    <div class="mb-3">
+        <label for="select-level" class="form-label">Select Level</label>
+        <select id="select-level" class="form-select">
+            <option value="">Choose level...</option>
+            <option value="A1">A1</option>
+            <option value="A2">A2</option>
+            <option value="B1">B1</option>
+            <option value="B2">B2</option>
+            <option value="C1">C1</option>
+            <option value="C2">C2</option>
+        </select>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Word</th>
+                <th>Meaning</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="admin-table-body">
+            <!-- Rows will be dynamically added here -->
+        </tbody>
+    </table>
+    <form id="add-word-form">
+        <div class="mb-3">
+            <label for="add-level" class="form-label">Level</label>
+            <select id="add-level" class="form-select">
+                <option value="A1">A1</option>
+                <option value="A2">A2</option>
+                <option value="B1">B1</option>
+                <option value="B2">B2</option>
+                <option value="C1">C1</option>
+                <option value="C2">C2</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="add-word" class="form-label">Word</label>
+            <input type="text" id="add-word" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="add-meaning" class="form-label">Meaning</label>
+            <input type="text" id="add-meaning" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Word</button>
+    </form>
+</div>
+</div>
+
   <script src="../js/card.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"

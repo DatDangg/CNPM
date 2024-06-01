@@ -1,6 +1,103 @@
 
 const database = firebase.database();
 
+const adminRef = firebase.database().ref('Admin/');
+const user = JSON.parse(localStorage.getItem('loggedInUser'));
+
+const username = user.username; // Replace with the actual username or fetch from user context
+
+// Check if the user is an admin
+adminRef.once("value", function(snapshot) {
+    const admins = snapshot.val();
+    if (admins && admins[username]) {
+        showAdminPanel();
+    } else {
+    }
+});
+function showAdminPanel() {
+    document.querySelector('.container').classList.add('d-none');
+    document.getElementById('admin-section').classList.remove('d-none');
+}
+
+// Function to load words for the selected level
+function loadWordsForLevel(level) {
+    const tbody = document.getElementById('admin-table-body');
+    tbody.innerHTML = ''; // Clear existing rows
+
+    firebase.database().ref(`game/cardmatch/${level}`).once('value').then(snapshot => {
+        const data = snapshot.val();
+        if (data) {
+            Object.keys(data).forEach(key => {
+                const row = document.createElement('tr');
+
+                const wordCell = document.createElement('td');
+                wordCell.textContent = key;
+                row.appendChild(wordCell);
+
+                const meaningCell = document.createElement('td');
+                meaningCell.textContent = data[key];
+                row.appendChild(meaningCell);
+
+                const removeCell = document.createElement('td');
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Remove';
+                removeButton.classList.add('btn', 'btn-danger');
+                removeButton.addEventListener('click', () => removeWord(level, key));
+                removeCell.appendChild(removeButton);
+                row.appendChild(removeCell);
+
+                tbody.appendChild(row);
+            });
+        }
+    });
+}
+
+// Function to remove a word from Firebase
+function removeWord(level, word) {
+    firebase.database().ref(`game/cardmatch/${level}/${word}`).remove().then(() => {
+        loadWordsForLevel(level); // Reload data after removing
+    }).catch(error => {
+        console.error('Error removing word: ', error);
+    });
+}
+
+// Function to add a new word to Firebase
+function addWord(level, word, meaning) {
+    firebase.database().ref(`game/cardmatch/${level}/${word}`).set(meaning).then(() => {
+        loadWordsForLevel(level); // Reload data after adding
+    }).catch(error => {
+        console.error('Error adding word: ', error);
+    });
+}
+
+// Event listener for level selection
+document.getElementById('select-level').addEventListener('change', function() {
+    const selectedLevel = this.value;
+    if (selectedLevel) {
+        loadWordsForLevel(selectedLevel);
+    } else {
+        document.getElementById('admin-table-body').innerHTML = ''; // Clear table if no level is selected
+    }
+});
+
+// Event listener for add word form
+document.getElementById('add-word-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const level = document.getElementById('add-level').value;
+    const word = document.getElementById('add-word').value.trim();
+    const meaning = document.getElementById('add-meaning').value.trim();
+
+    if (word && meaning) {
+        addWord(level, word, meaning);
+        // Clear the form
+        document.getElementById('add-word').value = '';
+        document.getElementById('add-meaning').value = '';
+    } else {
+        alert('Please fill in both the word and the meaning.');
+    }
+});
+
+
 function shuffle(array) {
     let currentIndex = array.length, randomIndex;
     while (currentIndex !== 0) {

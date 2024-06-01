@@ -204,3 +204,7 @@ html, body {
         width: 320px;
     }
 }
+
+.mb-3 {
+    margin-top: 80px;
+}
