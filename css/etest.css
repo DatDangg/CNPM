@@ -19,7 +19,7 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 130px;
+  /* height: 130px; */
   background-color: #ffffff;
   /* border: 1px solid #000000; */
   padding: 0 20px;
@@ -39,6 +39,7 @@
 }
 
 .thi-th .tao-de-thi {
+  margin: 60px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -57,9 +58,9 @@
 
 .thi-th .frame {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  width: 100%;
+  width: 900px;
 }
 
 .thi-th .frame-2 {
@@ -217,3 +218,7 @@
   background-color: #45a049;
 }
 
+#page-numbers {
+  display: flex;
+  gap: 10px;
+}

@@ -26,6 +26,7 @@ Promise.all([userTestRef.once("value"), testRef.once("value")])
     let htmlContent = "";
     let summaryContent = "";
     for (const questionNumber in testData) {
+      if (questionNumber === 'key') continue; // Bỏ qua phần key
       const question = testData[questionNumber];
       if (!question) continue;
 
@@ -96,10 +97,11 @@ Promise.all([userTestRef.once("value"), testRef.once("value")])
       `;
 
       summaryContent += `
-        <div class="question-summary ${isCorrect ? "correct" : "incorrect"}">
+        <div class="question-summary ${isCorrect ? "correct" : "incorrect"}" id="question-${questionNumber}" onclick="scrollToQuestion(${questionNumber})">
           ${questionNumber}
         </div>
       `;
+
     }
 
     document.getElementById("results").innerHTML = htmlContent;
@@ -132,5 +134,12 @@ function toggleVisibility(id) {
     element.style.display = "block";
   } else {
     element.style.display = "none";
+  }
+}
+function scrollToQuestion(questionNumber) {
+  const questionElement = document.getElementById(`question-${questionNumber}`);
+  console.log(questionElement)
+  if (questionElement) {
+    questionElement.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 }

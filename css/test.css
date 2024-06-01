@@ -67,7 +67,7 @@
 
 .thi-th .de {
   grid-row: 2;
-  grid-column: 5 / span 8; /* Span 8 columns */
+  grid-column: 8 / span 8; /* Span 8 columns */
 }
 
 
@@ -189,7 +189,7 @@
 
 .thi-th .bng-cu-hi {
   grid-row: 2;
-  grid-column: 1 / span 4; /* Span 4 columns */
+  grid-column: 1 / span 6; /* Span 4 columns */ 
 }
 
 .thi-th .frame-9 {
@@ -375,4 +375,24 @@ h1 {
   display: flex;
   justify-content: center;
   margin-top: 20px;
+}
+#button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+#button-container button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#button-container button:hover {
+  background-color: #0056b3;
 }

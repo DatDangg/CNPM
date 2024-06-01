@@ -22,8 +22,7 @@ adminRef.once("value", function(snapshot) {
     const admins = snapshot.val();
     if (admins && admins[username]) {
         document.querySelector('#admin-container').classList.remove('d-none');
-    } else {
-        document.querySelector('#game-container').classList.remove('d-none');
+        document.querySelector('#game-container').classList.add('d-none');
     }
 });
 

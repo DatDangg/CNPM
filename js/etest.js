@@ -39,7 +39,7 @@ function displayAdminPanel() {
                 lockedCheckbox.type = 'checkbox';
                 lockedCheckbox.checked = !!test.key;
                 lockedCell.appendChild(lockedCheckbox);
-                
+
                 row.appendChild(testCell);
                 row.appendChild(hiddenCell);
                 row.appendChild(lockedCell);
@@ -67,61 +67,117 @@ function displayUserPanel() {
 
         dbRef.once("value", function(snapshot) {
             const tests = snapshot.val();
-            const frame = document.createElement("div");
-            frame.className = "frame";
-            let frame2 = document.createElement("div");
-            frame2.className = "frame-2";
-
+            const frame = document.querySelector(".frame");
+            const testsPerPage = 9;
             const filteredTests = Object.keys(tests).filter(key => key.startsWith("Test") && tests[key].hide === 0);
+            const totalPages = Math.ceil(filteredTests.length / testsPerPage);
+            let currentPage = 1;
 
-            for (let i = 0; i < filteredTests.length; i++) {
-                const testKey = filteredTests[i];
-                const testData = tests[testKey];
+            function renderTests(page) {
+                frame.innerHTML = "";
+                const startIndex = (page - 1) * testsPerPage;
+                const endIndex = startIndex + testsPerPage;
+                const testsToDisplay = filteredTests.slice(startIndex, endIndex);
 
-                const key = i + 1;
-                const frame3 = document.createElement("div");
-                frame3.className = "frame-3";
-                frame3.setAttribute("data-test-number", i + 1);
-                frame3.setAttribute("data-test-key", testData.key ? testData.key : "");
-                frame3.addEventListener("click", function () {
-                    openTestPage(key, testData.key, userTestKeys, userRef);
-                });
-                const rectangleImg = document.createElement("img");
-                rectangleImg.className = "rectangle";
-                rectangleImg.src = "../images/rectangle-38-2.png";
-                const textWrapper2 = document.createElement("div");
-                textWrapper2.className = "text-wrapper-2";
-                textWrapper2.textContent = testKey;
-                const divWrapper = document.createElement("div");
-                frame3.appendChild(rectangleImg);
-                frame3.appendChild(textWrapper2);
-                frame3.appendChild(divWrapper);
-                frame2.appendChild(frame3);
+                for (let i = 0; i < testsToDisplay.length; i++) {
+                    const testKey = testsToDisplay[i];
+                    const testData = tests[testKey];
 
-                if ((i + 1) % 3 === 0 || i === filteredTests.length - 1) {
-                    frame.appendChild(frame2);
-                    document.querySelector(".frame").appendChild(frame);
-                    frame2 = document.createElement("div");
-                    frame2.className = "frame-2";
+                    const frame3 = document.createElement("div");
+                    frame3.className = "frame-3";
+                    frame3.setAttribute("data-test-number", startIndex + i + 1);
+                    frame3.setAttribute("data-test-key", testData.key ? testData.key : "");
+                    frame3.addEventListener("click", function () {
+                        openTestPage(startIndex + i + 1, testData.key, userTestKeys, userRef);
+                    });
+                    const rectangleImg = document.createElement("img");
+                    rectangleImg.className = "rectangle";
+                    rectangleImg.src = "../images/rectangle-38-2.png";
+                    const textWrapper2 = document.createElement("div");
+                    textWrapper2.className = "text-wrapper-2";
+                    textWrapper2.textContent = testKey;
+                    frame3.appendChild(rectangleImg);
+                    frame3.appendChild(textWrapper2);
+                    frame.appendChild(frame3);
+                }
+
+                renderPagination();
+            }
+
+            function renderPagination() {
+                const pageNumbers = document.getElementById("page-numbers");
+                pageNumbers.innerHTML = "";
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const pageDiv = document.createElement("div");
+                    pageDiv.className = "group-wrapper";
+                    const pageButton = document.createElement("div");
+                    pageButton.className = "group-2";
+                    pageButton.innerHTML = `<div class="element">${i}</div>`;
+                    pageButton.addEventListener("click", function () {
+                        currentPage = i;
+                        renderTests(currentPage);
+                    });
+                    pageDiv.appendChild(pageButton);
+                    pageNumbers.appendChild(pageDiv);
                 }
             }
+
+            document.getElementById("previous-page").addEventListener("click", function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderTests(currentPage);
+                }
+            });
+
+            document.getElementById("next-page").addEventListener("click", function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderTests(currentPage);
+                }
+            });
+
+            renderTests(currentPage);
         });
     });
 }
 
+function openTestPage(testNumber, testKey, userTestKeys, userRef) {
+    if (testKey && !userTestKeys.includes(testKey)) {
+        const modal = document.getElementById("payment-modal");
+        modal.style.display = "block";
+
+        document.getElementById("payment-form").onsubmit = function(event) {
+            event.preventDefault();
+            const enteredKey = document.getElementById("password-input").value.trim();
+            if (enteredKey === testKey) {
+                userTestKeys.push(testKey);
+                userRef.update({ testkey: userTestKeys.join(",") });
+                window.location.href = `../etest/test.html?test=${testNumber}`;
+            } else {
+                Swal.fire("Incorrect Password", "Please try again.", "error");
+            }
+        };
+    } else {
+        window.location.href = `../etest/test.html?test=${testNumber}`;
+    }
+}
+
 function updateTestVisibility(testKey, isHidden) {
-    dbRef.child(testKey).update({ hide: isHidden ? 1 : 0 });
+    const updates = {};
+    updates[`Test/${testKey}/hide`] = isHidden ? 1 : 0;
+    firebase.database().ref().update(updates);
 }
 
 function updateTestLockStatus(testKey, isLocked) {
-    dbRef.child(testKey).update({ key: isLocked ? testKey : "" });
-}
-
-function openTestPage(testKey, testKeyValue, userTestKeys, userRef) {
-    if (testKeyValue && !userTestKeys.includes(testKeyValue)) {
-        showPaymentModal(testKeyValue, userRef);
+    const keyRef = firebase.database().ref(`Test/${testKey}/key`);
+    if (isLocked) {
+        const newKey = prompt("Please enter a key to lock this test:");
+        if (newKey) {
+            keyRef.set(newKey);
+        }
     } else {
-        window.location.href = `test.html?test=${testKey}`;
+        keyRef.remove();
     }
 }
 
