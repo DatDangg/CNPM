@@ -3,7 +3,7 @@ const adminRef = firebase.database().ref('Admin/');
 const user = JSON.parse(localStorage.getItem('loggedInUser'));
 
 const username = user.username; // Replace with the actual username or fetch from user context
-
+let userTestKeys = [];
 // Check if the user is an admin
 adminRef.once("value", function(snapshot) {
     const admins = snapshot.val();
@@ -25,44 +25,49 @@ function displayAdminPanel() {
         const tests = snapshot.val();
         const adminTableBody = document.getElementById('admin-table-body');
 
-        Object.keys(tests).forEach(testKey => {
-            if (testKey.startsWith("Test")) {
-                const test = tests[testKey];
-                const row = document.createElement('tr');
-                const testCell = document.createElement('td');
-                testCell.textContent = testKey;
-                const hiddenCell = document.createElement('td');
-                const hiddenCheckbox = document.createElement('input');
-                hiddenCheckbox.type = 'checkbox';
-                hiddenCheckbox.checked = test.hide === 1;
-                hiddenCell.appendChild(hiddenCheckbox);
-                const lockedCell = document.createElement('td');
-                const lockedCheckbox = document.createElement('input');
-                lockedCheckbox.type = 'checkbox';
-                lockedCheckbox.checked = !!test.key;
-                lockedCell.appendChild(lockedCheckbox);
+        // Sort the test keys numerically
+        const sortedTestKeys = Object.keys(tests).filter(key => key.startsWith("Test")).sort((a, b) => {
+            const numA = parseInt(a.replace("Test", ""));
+            const numB = parseInt(b.replace("Test", ""));
+            return numA - numB;
+        });
 
-                row.appendChild(testCell);
-                row.appendChild(hiddenCell);
-                row.appendChild(lockedCell);
-                adminTableBody.appendChild(row);
+        sortedTestKeys.forEach(testKey => {
+            const test = tests[testKey];
+            const row = document.createElement('tr');
+            const testCell = document.createElement('td');
+            testCell.textContent = testKey;
+            const hiddenCell = document.createElement('td');
+            const hiddenCheckbox = document.createElement('input');
+            hiddenCheckbox.type = 'checkbox';
+            hiddenCheckbox.checked = test.hide === 1;
+            hiddenCell.appendChild(hiddenCheckbox);
+            const lockedCell = document.createElement('td');
+            const lockedCheckbox = document.createElement('input');
+            lockedCheckbox.type = 'checkbox';
+            lockedCheckbox.checked = !!test.key;
+            lockedCell.appendChild(lockedCheckbox);
 
-                hiddenCheckbox.addEventListener('change', function() {
-                    updateTestVisibility(testKey, hiddenCheckbox.checked);
-                });
+            row.appendChild(testCell);
+            row.appendChild(hiddenCell);
+            row.appendChild(lockedCell);
+            adminTableBody.appendChild(row);
 
-                lockedCheckbox.addEventListener('change', function() {
-                    updateTestLockStatus(testKey, lockedCheckbox.checked);
-                });
-            }
+            hiddenCheckbox.addEventListener('change', function() {
+                updateTestVisibility(testKey, hiddenCheckbox.checked);
+            });
+
+            lockedCheckbox.addEventListener('change', function() {
+                updateTestLockStatus(testKey, lockedCheckbox.checked);
+            });
         });
     });
 }
 
+
 function displayUserPanel() {
     const userRef = firebase.database().ref(`Users/${username}`);
-    let userTestKeys = [];
-
+    
     userRef.once("value", function(userSnapshot) {
         const userData = userSnapshot.val();
         userTestKeys = userData.testkey ? userData.testkey.split(',').map(key => key.trim()) : [];
@@ -71,7 +76,15 @@ function displayUserPanel() {
             const tests = snapshot.val();
             const frame = document.querySelector(".frame");
             const testsPerPage = 9;
-            const filteredTests = Object.keys(tests).filter(key => key.startsWith("Test") && tests[key].hide === 0);
+            let filteredTests = Object.keys(tests).filter(key => key.startsWith("Test") && tests[key].hide === 0);
+
+            // Sort the test keys numerically
+            filteredTests = filteredTests.sort((a, b) => {
+                const numA = parseInt(a.replace("Test", ""));
+                const numB = parseInt(b.replace("Test", ""));
+                return numA - numB;
+            });
+
             const totalPages = Math.ceil(filteredTests.length / testsPerPage);
             let currentPage = 1;
 
@@ -144,24 +157,14 @@ function displayUserPanel() {
     });
 }
 
-function openTestPage(testNumber, testKey, userTestKeys, userRef) {
-    if (testKey && !userTestKeys.includes(testKey)) {
-        const modal = document.getElementById("payment-modal");
-        modal.style.display = "block";
 
-        document.getElementById("payment-form").onsubmit = function(event) {
-            event.preventDefault();
-            const enteredKey = document.getElementById("password-input").value.trim();
-            if (enteredKey === testKey) {
-                userTestKeys.push(testKey);
-                userRef.update({ testkey: userTestKeys.join(",") });
-                window.location.href = `../etest/test.html?test=${testNumber}`;
-            } else {
-                Swal.fire("Incorrect Password", "Please try again.", "error");
-            }
-        };
+function openTestPage(testKey, testKeyValue, userTestKeys, userRef) {
+    if (testKeyValue && !userTestKeys.includes(testKeyValue)) {
+        console.log("Showing payment modal for test:", testKey);
+        showPaymentModal(testKeyValue, userRef);
     } else {
-        window.location.href = `../etest/test.html?test=${testNumber}`;
+        console.log("Navigating to test page for test:", testKey);
+        window.location.href = `test.html?test=${testKey}`;
     }
 }
 
@@ -192,23 +195,61 @@ function showPaymentModal(testKeyValue, userRef) {
 
     closeBtn.onclick = function () {
         modal.style.display = "none";
-    };
+    }
 
-    checkPaymentBtn.onclick = function () {
-        Swal.fire({
-            title: 'Payment Successful!',
-            text: 'Access has been granted.',
-            icon: 'success'
-        });
-        modal.style.display = "none";
-        userRef.update({
-            testkey: firebase.database.ServerValue.arrayUnion(testKeyValue)
-        });
-    };
-    
     window.onclick = function (event) {
         if (event.target === modal) {
             modal.style.display = "none";
         }
-    };
+    }
+
+    checkPaymentBtn.onclick = function () {
+        checkPayment(testKeyValue, userRef);
+    }
+}
+
+function checkPayment(testKeyValue, userRef) {
+    fetch('https://dangkyhoctlu.000webhostapp.com/test.php')
+        .then(response => response.json())
+        .then(data => {
+            console.log("Payment data:", data);
+            if (data.transactions && data.transactions.length > 0) {
+                for (let i = 0; i < data.transactions.length; i++) {
+                    const transaction = data.transactions[i];
+                    if (parseFloat(transaction.amount_in) > 2000) {
+                        const transactionDate = new Date(transaction.transaction_date);
+                        // console.log(transactionDate)
+                        const currentDate = new Date();
+                        const timeDifference = Math.abs(currentDate - transactionDate) / 1000; 
+
+                        if (timeDifference <= 3000000000) { 
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thanh toán thành công',
+                                text: 'Giao dịch của bạn đã được xác nhận.',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                userTestKeys.push(testKeyValue);
+                        const updatedTestKeys = userTestKeys.join(', ');
+                        // console.log(testKeyValue.slice(4))
+                        userRef.update({ testkey: updatedTestKeys }).then(() => {
+                            window.location.href = `test.html?test=${testKeyValue.slice(4)}`;
+                        });
+                            });
+                            return;
+                        } else {
+                            alert('time-out');
+                            return;
+                        }
+                    }
+                }
+                alert('failed');
+            } else {
+                alert('failed');
+            }
+        })
+        .catch(error => {
+            console.error('Error checking payment status:', error);
+            setPaymentStatus('error');
+        });
 }

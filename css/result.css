@@ -107,7 +107,7 @@ body {
 
 .questions-summary {
   display: grid;
-grid-template-columns: repeat(10, 1fr);
+grid-template-columns: repeat(5, 1fr);
   gap: 10px;
   padding: 10px;
   border-left: 1px solid #ccc;

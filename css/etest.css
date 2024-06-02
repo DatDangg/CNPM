@@ -122,9 +122,8 @@
   margin-top: 20px;
 }
 
-.thi-th .vector,
-.thi-th .img {
-  width: 18px;
+.thi-th .vector, .thi-th .img {
+  width: 12px;
   height: 35.16px;
 }
 
@@ -149,8 +148,6 @@
   justify-content: center;
   width: 60px;
   height: 60px;
-  background-color: #3a7de1;
-  border-radius: 30px;
 }
 
 .thi-th .text-wrapper-9 {

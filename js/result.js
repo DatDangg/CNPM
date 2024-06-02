@@ -27,6 +27,7 @@ Promise.all([userTestRef.once("value"), testRef.once("value")])
     let htmlContent = "";
     let summaryContent = "";
     for (const questionNumber in testData) {
+      if (questionNumber === 'key' || questionNumber === 'hide') continue;
       const question = testData[questionNumber];
       if (!question) continue;
 
