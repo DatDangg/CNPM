@@ -177,10 +177,7 @@ function updateTestVisibility(testKey, isHidden) {
 function updateTestLockStatus(testKey, isLocked) {
     const keyRef = firebase.database().ref(`Test/${testKey}/key`);
     if (isLocked) {
-        const newKey = prompt("Please enter a key to lock this test:");
-        if (newKey) {
-            keyRef.set(newKey);
-        }
+            keyRef.set(testKey.slice(4));
     } else {
         keyRef.remove();
     }
@@ -250,6 +247,6 @@ function checkPayment(testKeyValue, userRef) {
         })
         .catch(error => {
             console.error('Error checking payment status:', error);
-            setPaymentStatus('error');
+            alert('error');
         });
 }
