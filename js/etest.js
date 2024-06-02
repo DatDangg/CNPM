@@ -233,7 +233,7 @@ function checkPayment(testKeyValue, userRef) {
                         const updatedTestKeys = userTestKeys.join(', ');
                         // console.log(testKeyValue.slice(4))
                         userRef.update({ testkey: updatedTestKeys }).then(() => {
-                            window.location.href = `test.html?test=${testKeyValue.slice(4)}`;
+                            window.location.href = `test.html?test=${testKeyValue}`;
                         });
                             });
                             return;
